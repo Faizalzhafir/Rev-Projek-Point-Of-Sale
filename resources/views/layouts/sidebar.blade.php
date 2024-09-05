@@ -16,18 +16,18 @@
       <!-- sidebar menu: : style can be found in sidebar.less -->
       <ul class="sidebar-menu" data-widget="tree">
         <li>
-          <a href="#">
+          <a href="{{ route('home') }}">
           <i class="fa fa-dashboard"></i> <span>Dashboard</span>
           </a>
         </li>
         <li class="header">Master</li>
         <li>
-          <a href="#">
+          <a href="{{ route('category.index')}}">
           <i class="fa fa-cube"></i> <span>Kategori</span>
           </a>
         </li>
         <li>
-          <a href="#">
+          <a href="{{ route('product.index') }}">
           <i class="fa fa-cubes"></i> <span>Produk</span>
           </a>
         </li>
