@@ -48,8 +48,8 @@ class ProductController extends Controller
             ->addColumn('action', function ($product) {
                 return '
                 <div class="btn-group">
-                    <button onclick="editForm(`'. route('product.update', $product->id_produk) .'`)" class="btn btn-xs btn-success btn-flat"><i class="fa fa-pencil"></i></button>                
-                    <button onclick="deleteForm(`'. route('product.destroy', $product->id_produk) .'`)" class="btn btn-xs btn-danger btn-flat"><i class="fa fa-trash"></i></button>
+                    <button  type="button" onclick="editForm(`'. route('product.update', $product->id_produk) .'`)" class="btn btn-xs btn-success btn-flat"><i class="fa fa-pencil"></i></button>                
+                    <button  type="button" onclick="deleteForm(`'. route('product.destroy', $product->id_produk) .'`)" class="btn btn-xs btn-danger btn-flat"><i class="fa fa-trash"></i></button>
                 </div>                
                 ';
             })
@@ -75,6 +75,7 @@ class ProductController extends Controller
         $product = Product::latest()->first();
         $request['kode_produk'] = 'P'. tambah_nol_didepan((int)$product->id_produk + 1, 6); // Membuat kode produk unik
         $product = Product::create($request->all());
+         //apabila kita menemukan nullattempt to read property,itu karena pada saat pengisian memeberikan nilai null,sehingga menghasilkan error untuk mengatasinya tambahkan ?? new Model; agar langsung dpat diterima oleh sistem dan membuat data baru
 
         return response()->json('Data berhasil disimpan', 200);
     }

@@ -6,7 +6,7 @@
 
 @section('breadcrumb')
     @parent
-    <li class="active">Produk</li>
+    <li class="active">Daftar Produk</li>
 @endsection
 
 @section('content')
@@ -25,7 +25,7 @@
                         <table class="table table-striped table-bordered">
                             <thead>
                                 <tr>
-                                    <th>
+                                    <th  width="5%">
                                         <input type="checkbox" name="select_all" id="select_all">
                                     </th>
                                     <th width="5%">No</th>
