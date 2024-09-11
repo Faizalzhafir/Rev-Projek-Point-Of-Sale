@@ -8,7 +8,7 @@
             <div class="modal-body">
               <table class="table table-striped table-bordered">
                 <thead>
-                    <th>No</th>
+                    <th width="5%">No</th>
                     <th>Nama</th>
                     <th>Telepon</th>
                     <th>Alamat</th>
