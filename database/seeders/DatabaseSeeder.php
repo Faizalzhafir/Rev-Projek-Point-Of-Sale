@@ -18,5 +18,10 @@ class DatabaseSeeder extends Seeder
         //     'name' => 'Test User',
         //     'email' => 'test@example.com',
         // ]);
+        $this->call([
+            SettingTableSeeder::class,
+        ]);
+        //perintah untuk menghubungkan semua seeder yanga ada di folde seeder,sehingga hanya menjalankan artisan db:seed saja
     }
+
 }

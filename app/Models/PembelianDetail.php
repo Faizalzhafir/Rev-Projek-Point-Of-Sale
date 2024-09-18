@@ -16,4 +16,5 @@ class PembelianDetail extends Model
     public function produk() {
         return $this->hasOne(Product::class, 'id_produk', 'id_produk');
     }
+    // //fungsi untuk membuat relasi dengan model produk,agar nantinya data produk dapat tampil di modal pembelian detail
 }

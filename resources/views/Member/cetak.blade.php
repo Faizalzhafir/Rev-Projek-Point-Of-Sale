@@ -75,10 +75,10 @@
                     @foreach ($data as $item)
                         <td class="text-center">
                             <div class="box">
-                                <img src="{{ public_path('img/member.png') }}" alt="card" width="100%">
+                                <img src="{{ public_path($setting->path_kartu_member) }}" alt="card" width="100%">
                                 <div class="logo">
-                                    <p>{{ config('app.name') }}</p>
-                                    <img src="{{ public_path('img/logo.png') }}" alt="logo">
+                                    <p>{{ $setting->nama_perusahaan }}</p>
+                                    <img src="{{ public_path($setting->path_logo) }}" alt="logo">
                                 </div>
                                 <div class="nama">{{ $item->nama }}</div>
                                 <div class="telepon">{{ $item->telepon }}</div>

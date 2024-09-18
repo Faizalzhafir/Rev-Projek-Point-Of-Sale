@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\Models\Member;
+use App\Models\Setting;
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 use PDF;
 use Illuminate\Http\Request;
@@ -122,10 +123,11 @@ class MemberController extends Controller
 
         $datamember = $datamember->chunk(2);
 
+        $setting = Setting::first();
         // Generate PDF dengan data yang dikumpulkan
         $no = 1;
         // return view('Member.cetak', compact('datamember','no'));
-        $pdf = Pdf::loadView('Member.cetak', compact('datamember', 'no'));
+        $pdf = Pdf::loadView('Member.cetak', compact('datamember', 'no', 'setting'));
         $pdf->setPaper(array(0, 0, 566.93, 850.39), 'portrait');
 
         return $pdf->stream('member.pdf');

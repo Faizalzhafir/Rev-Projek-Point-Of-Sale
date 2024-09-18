@@ -1,12 +1,12 @@
 @extends('layouts.master')
 
 @section('title')
-    Daftar Pembelian
+    Daftar Penjualan
 @endsection
 
 @section('breadcrumb')
     @parent
-    <li class="active"> Pembelian</li>
+    <li class="active"> Penjualan</li>
 @endsection
     
 @section('content')
@@ -14,24 +14,18 @@
     <div class="row">
         <div class="col-lg-12">
             <div class="box">
-                <div class="box-header with-border">
-                    <button onclick="addForm()" class="btn btn-success btn-xs btn-flat"><i class="fa fa-plus-circle"></i> Transaksi Baru</button>
-                    @empty(! session ('id_pembelian'))
-                    <a href="{{ route('pembelian_detail.index') }}" class="btn btn-info btn-xs btn-flat"><i class="fa fa-pencil"></i> Transaksi Aktif</a>
-                    @endempty
-                    <!-- empty berfungsi agar pada saat input di transaksi,jika ada,maka tombol aktif akan menampilkan transaksi yang baru saja dilakukanmenggunakan session -->
-                </div>
                 <div class="box-body table-responsive">
-                    <table class="table table-striped table-bordered table-pembelian">
+                    <table class="table table-striped table-bordered table-penjualan">
                         <thead>
                             <tr>
                                 <th width="5%">No</th>
                                 <th>Tanggal</th>
-                                <th>Supplier</th>
+                                <th>Kode Member</th>
                                 <th>Total Item</th>
                                 <th>Total Harga</th>
                                 <th>Diskon</th>
                                 <th>Total Bayar</th>
+                                <th>Kasir</th>
                                 <th width="15%"><i class="fa fa-cog"></i></th>
                             </tr>
                         </thead>
@@ -40,8 +34,8 @@
             </div>
         </div>
     </div>
-    @includeIf('Pembelian.supplier')
-    @includeIf('Pembelian.detail')
+    
+    @includeIf('Penjualan.detail')
 @endsection
 
 @push('scripts')
@@ -49,27 +43,26 @@
         let table, table1;
 
         $(function () {
-            table = $('.table-pembelian').DataTable({
+            table = $('.table-penjualan').DataTable({
                 processing: true,
                 autoWidth: false,
                 // Uncomment and set URL if you're using AJAX
                 ajax: {
-                    url: '{{ route('pembelian.data') }}',
+                    url: '{{ route('penjualan.data') }}',
                 },
                 columns: [
                     {data: 'DT_RowIndex', searchable: false, sortable: false},
                     {data: 'tanggal'},
-                    {data: 'supplier'},
+                    {data: 'kode_member'},
                     {data: 'total_item'},
                     {data: 'total_harga'},
                     {data: 'diskon'},
                     {data: 'bayar'},
+                    {data: 'kasir'},
                     {data: 'action', searchable: false, sortable: false},
                 ] 
                 //columns diatas berfungsi untuk menampilkan isi dari data yang diinputkan,dengan posisi dibawah tabel, thead diatas
             });
-
-            $('.table-supplier').DataTable();
 
             table1 = $('.table-detail').DataTable({
                 processing: true,
@@ -79,17 +72,12 @@
                     {data: 'DT_RowIndex', searchable: false, sortable: false},
                     {data: 'kode_produk'},
                     {data: 'nama_produk'},
-                    {data: 'harga_beli'},
+                    {data: 'harga_jual'},
                     {data: 'jumlah'},
                     {data: 'subtotal'},
                 ] 
             })
         });
-
-        function addForm() {
-            $('#modal-supplier').modal('show');
-  
-        }
 
         function showDetail(url) {
             $('#modal-detail').modal('show');

@@ -70,7 +70,8 @@ return [
     |
     */
 
-    'timezone' => 'UTC',
+    'timezone' => env('APP_TIMEZONE', 'UTC'),
+    //memfleksibelkan waktu untuk penyesuain di sistem,jika di inodenesia,gunakan di file env
 
     /*
     |--------------------------------------------------------------------------
@@ -191,6 +192,7 @@ return [
         'PDF'   => Barryvdh\DomPDF\Facade::class,
         'DNS1D' => Milon\Barcode\Facades\DNS1DFacade::class,
         'DNS2D' => Milon\Barcode\Facades\DNS2DFacade::class,
+        'DB'    => Illuminate\Support\Facades\DB::class,
     ])->toArray(),
 
 ];

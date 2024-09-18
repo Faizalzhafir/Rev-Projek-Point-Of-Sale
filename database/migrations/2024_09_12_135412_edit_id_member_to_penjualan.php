@@ -11,10 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('produk', function (Blueprint $table) {
-            $table->string('kode_produk')
-                  ->unique()
-                  ->after('id_kategori');
+        Schema::table('penjualan', function (Blueprint $table) {
+            $table->integer('id_member')
+                  ->nullable()
+                  ->change();
         });
     }
 
@@ -23,8 +23,9 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('produk', function (Blueprint $table) {
-            $table->dropColomn('kode_produk');
+        Schema::table('penjualan', function (Blueprint $table) {
+            $table->integer('id_member')
+                  ->change();
         });
     }
 };
