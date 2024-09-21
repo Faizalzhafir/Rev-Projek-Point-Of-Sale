@@ -124,7 +124,7 @@
             </div>
 
             <div class="box-footer">
-                <button type="submit" class="btn btn-primary btn-sm btn-flat pull-right btn-simpan"><i class="fa fa-floppy-o"></i> Simpan Transaksi</button>
+                <button type="submit" class="btn btn-primary btn-sm btn-flat pull-right btn-simpan"><i class="fa fa-floppy-o"></i>  Simpan Transaksi</button>
             </div>
         </div>
     </div>
@@ -249,7 +249,7 @@
             });
     }
 
-    function deleteData(url) {
+    function deleteForm(url) {
         if (confirm('Yakin ingin menghapus data terpilih?')) {
             $.post(url, {
                     '_token': $('[name=csrf-token]').attr('content'),

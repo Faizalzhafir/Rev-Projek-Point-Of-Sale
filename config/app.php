@@ -193,6 +193,7 @@ return [
         'DNS1D' => Milon\Barcode\Facades\DNS1DFacade::class,
         'DNS2D' => Milon\Barcode\Facades\DNS2DFacade::class,
         'DB'    => Illuminate\Support\Facades\DB::class,
+        'Hash'  => Illuminate\Support\Facades\Hash::class,
     ])->toArray(),
 
 ];

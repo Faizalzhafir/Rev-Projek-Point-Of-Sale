@@ -11,27 +11,18 @@
             </div>
             <div class="modal-body">
                <div class="form-group row">
-                <label for="nama" class="col-md-2 col-md-offset-1 control-label">Nama</label>
+                <label for="deskripsi" class="col-md-2 col-md-offset-1 control-label">Deskripsi</label>
                 <div class="col-md-9">
-                    <input type="text" name="nama" id="nama" class="form-control" required outofocus>
+                    <input type="text" name="deskripsi" id="deskripsi" class="form-control" required>
                     <span class="help-block with-errors"></span>
                 </div>
                </div>
             </div>
             <div class="modal-body">
                <div class="form-group row">
-                <label for="telepon" class="col-md-2 col-md-offset-1 control-label">Telepon</label>
+                <label for="nominal" class="col-md-2 col-md-offset-1 control-label">Nominal</label>
                 <div class="col-md-9">
-                    <input type="number" name="telepon" id="telepon" class="form-control" required>
-                    <span class="help-block with-errors"></span>
-                </div>
-               </div>
-            </div>
-            <div class="modal-body">
-               <div class="form-group row">
-                <label for="alamat" class="col-md-2 col-md-offset-1 control-label">Alamat</label>
-                <div class="col-md-9">
-                   <textarea name="alamat" id="alamat" class="form-control" rows="3"></textarea>
+                   <textarea name="nominal" id="nominal" class="form-control" rows="3"></textarea>
                     <span class="help-block with-errors"></span>
                 </div>
                </div>

@@ -5,7 +5,7 @@
   <div class="login-box-body">
     <div class="login-logo">
         <a href="{{ url('/') }}"><b>{{ config('app.name') }}</b></a>
-        <!-- <img src="{{ asset('img/logo.png') }}" alt="logo.png" width="100"> -->
+        <!-- <img src="{{ url($setting->path_logo) }}" alt="logo.png" width="100"> -->
         <!-- untuk menambahkan logo gunakan di public,buat folder img,lalu pasang disana -->
     </div>
 

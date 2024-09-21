@@ -26,21 +26,24 @@
     </style>
 </head>
 <body>
+    <h2 align="center"><b>Nota Penjualan {{ $setting->nama_perusahaan }} </b></h2 class="txt-center">
    <table width="100%">
+   <img src="{{ public_path($setting->path_logo) }}" alt="{{ $setting->path_logo }}" width="90">
     <tr>
         <td rowspan="4" width="60%">
-            <img src="{{ public_path($setting->path_logo) }}" alt="{{ $setting->path_logo }}" width="120">
-            <br>
             {{ $setting->alamat }}
             <br>
             <br>
         </td>
+    </tr>
+    
+    <tr>
         <td>Tanggal</td>
-        <td>: {{ tanggal_indonesia(date('Y-m-d')) }}</td>
+        <td>: {{ tanggal_indonesia(date('Y-m-d'), false) }}</td>
     </tr>
     <tr>
-    <td>Kode Member</td>
-    <td>: {{ $penjualan->member->kode_member ?? '' }}</td>
+        <td>Kode Member</td>
+        <td>: {{ $penjualan->member->kode_member ?? '' }}</td>
     </tr>
    </table>
 
@@ -71,7 +74,7 @@
             </tbody>
             <tfoot>
                 <tr>
-                    <td colspan="6" class="text-right">Total Haga</td>
+                    <td colspan="6" class="text-right">Total Harga</td>
                     <td class="text-right"><b>{{ format_uang($penjualan->total_harga) }}</b></td>
                 </tr>
                 <tr>
@@ -95,7 +98,7 @@
 
    <table width="100%">
         <tr>
-            <td><b>Terimakasih telah berbelanja dan sampai jumpa</b></td>
+            <td><b>Terimakasih telah berbelanja dan sampai jumpa</b><br><br></td>
             <td class="text-center">
                 Kasir
                 <br>

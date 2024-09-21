@@ -11,33 +11,45 @@
             </div>
             <div class="modal-body">
                <div class="form-group row">
-                <label for="nama" class="col-md-2 col-md-offset-1 control-label">Nama</label>
+                <label for="name" class="col-md-2 col-md-offset-1 control-label">Nama</label>
                 <div class="col-md-9">
-                    <input type="text" name="nama" id="nama" class="form-control" required outofocus>
+                    <input type="text" name="name" id="name" class="form-control" required>
                     <span class="help-block with-errors"></span>
                 </div>
                </div>
             </div>
             <div class="modal-body">
                <div class="form-group row">
-                <label for="telepon" class="col-md-2 col-md-offset-1 control-label">Telepon</label>
+                <label for="email" class="col-md-2 col-md-offset-1 control-label">Email</label>
                 <div class="col-md-9">
-                    <input type="number" name="telepon" id="telepon" class="form-control" required>
+                    <input type="email" name="email" id="email" class="form-control" required>
                     <span class="help-block with-errors"></span>
                 </div>
                </div>
             </div>
             <div class="modal-body">
                <div class="form-group row">
-                <label for="alamat" class="col-md-2 col-md-offset-1 control-label">Alamat</label>
+                <label for="password" class="col-md-2 col-md-offset-1 control-label">Password</label>
                 <div class="col-md-9">
-                   <textarea name="alamat" id="alamat" class="form-control" rows="3"></textarea>
+                    <input type="password" name="password" id="password" class="form-control" minlength="6" required>
                     <span class="help-block with-errors"></span>
                 </div>
+                <!-- minlength untuk penginputan password harus 6 digit -->
+               </div>
+            </div>
+            <div class="modal-body">
+               <div class="form-group row">
+                <label for="password_confirmation" class="col-md-2 col-md-offset-1 control-label">Konfimasi Password</label>
+                <div class="col-md-9">
+                    <input type="password" name="password_confirmation" id="password_confirmation" class="form-control" required
+                    data-match="#password">
+                    <span class="help-block with-errors"></span>
+                </div>
+                <!-- menambahkan validasi dalam lingkup cliebt-side berupa kesesuaian antara passsword dan konfirmasi passwornya -->
                </div>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-sm btn-flat btn-primary"><i class="fa fa-save"></i> Save</button>
+            <button class="btn btn-sm btn-flat btn-primary"><i class="fa fa-save"></i> Save</button>
                 <button type="button" class="btn btn-sm btn-flat btn-warning" data-dismiss="modal"><i class="fa fa-arrow-circle-left"></i> Close</button>
             </div>
         </div><!-- /.modal-content -->

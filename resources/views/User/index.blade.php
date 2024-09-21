@@ -1,12 +1,12 @@
 @extends('layouts.master')
 
 @section('title')
-    Daftar Supplier
+    Daftar User
 @endsection
 
 @section('breadcrumb')
     @parent
-    <li class="active"> Supplier</li>
+    <li class="active"> User</li>
 @endsection
     
 @section('content')
@@ -15,7 +15,7 @@
         <div class="col-lg-12">
             <div class="box">
                 <div class="box-header with-border">
-                    <button onclick="addForm('{{ route('supplier.store') }}')" class="btn btn-success btn-xs btn-flat"><i class="fa fa-plus-circle"></i> Tambah</button>
+                    <button onclick="addForm('{{ route('user.store') }}')" class="btn btn-success btn-xs btn-flat"><i class="fa fa-plus-circle"></i> Tambah</button>
                 </div>
                 <div class="box-body table-responsive">
                     <table class="table table-striped table-bordered">
@@ -23,8 +23,7 @@
                             <tr>
                                 <th width="5%">No</th>
                                 <th>Nama</th>
-                                <th>Telepon</th>
-                                <th>Alamat</th>
+                                <th>Email</th>
                                 <th width="15%"><i class="fa fa-cog"></i></th>
                             </tr>
                         </thead>
@@ -33,7 +32,7 @@
             </div>
         </div>
     </div>
-    @includeIf('Supplier.form')
+    @includeIf('User.form')
 @endsection
 
 @push('scripts')
@@ -46,13 +45,12 @@
                 autoWidth: false,
                 // Uncomment and set URL if you're using AJAX
                 ajax: {
-                    url: '{{ route('supplier.data') }}',
+                    url: '{{ route('user.data') }}',
                 },
                 columns: [
                     {data: 'DT_RowIndex', searchable: false, sortable: false},
-                    {data: 'nama'},
-                    {data: 'telepon'},
-                    {data: 'alamat'},
+                    {data: 'name'},
+                    {data: 'email'},
                     {data: 'action', searchable: false, sortable: false},
                 ] 
                 //columns diatas berfungsi untuk menampilkan isi dari data yang diinputkan,dengan posisi dibawah tabel, thead diatas
@@ -76,28 +74,31 @@
 
         function addForm(url) {
             $('#modal-form').modal('show');
-            $('#modal-form .modal-title').text('Add Supplier');
+            $('#modal-form .modal-title').text('Tambah User');
 
             $('#modal-form form')[0].reset();
             $('#modal-form form').attr('action', url);
             $('#modal-form [name=_method]').val('post');
-            $('#modal-form [name=nama]').focus();
+            $('#modal-form [name=name]').focus();
+
+            $('#password, #password_confirmation').attr('required', true);
         }
 
         function editForm(url) {
             $('#modal-form').modal('show');
-            $('#modal-form .modal-title').text('Edit Supplier');
+            $('#modal-form .modal-title').text('Edit User');
 
             $('#modal-form form')[0].reset();
             $('#modal-form form').attr('action', url);
             $('#modal-form [name=_method]').val('put');
-            $('#modal-form [name=nama]').focus();
+            $('#modal-form [name=name]').focus();
+            
+            $('#password, #password_confirmation').attr('required', false);
 
             $.get(url)
                 .done((response) => {
-                    $('#modal-form [name=nama]').val(response.nama);
-                    $('#modal-form [name=telepon]').val(response.telepon);
-                    $('#modal-form [name=alamat]').val(response.alamat);
+                    $('#modal-form [name=name]').val(response.name);
+                    $('#modal-form [name=email]').val(response.email);
                     //digunakan untuk bagian field mana saja yang nantinya dapat diedit dan diatmpilkan difield,seperti value diphp
                 })
                 .fail((errors) => {

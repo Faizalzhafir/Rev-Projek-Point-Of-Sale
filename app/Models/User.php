@@ -58,4 +58,9 @@ class User extends Authenticatable
     protected $appends = [
         'profile_photo_url',
     ];
+
+    public function scopeIsNotAdmin($query) {
+        return $query->where('level', '!=', 1);
+    }
+    //scope disini berfungsi agar tidak menampilkan level 1,yaitu admin pada halaman data user
 }
