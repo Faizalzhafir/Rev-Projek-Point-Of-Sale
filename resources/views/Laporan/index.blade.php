@@ -43,6 +43,7 @@
 @endsection
 
 @push('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="{{ asset('AdminLTE-2/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js') }}"></script>
     <script>
         let table;
@@ -74,7 +75,7 @@
                 autoclose: true
             });
             //pertama kita akan menlakukan aksi melalui url,mengguakan ajax,dengan type post,dan mengirimkan data melalui form,lalu buat manipulasi di controller utuk method store
-
+            
         });
 
         function updatePeriode(url) {

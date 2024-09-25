@@ -51,6 +51,7 @@
 @endsection
 
 @push('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         let table;
 
@@ -82,6 +83,12 @@
                     .done((response) => {
                         $('#modal-form').modal('hide');
                         table.ajax.reload();
+                        Swal.fire({
+                        icon: "success",
+                        title: "Produk berhasil disimpan!",
+                        showConfirmButton: false,
+                        timer: 1500
+                        });
                     })
                     .fail((errors) => {
                         alert('Tidak dapat menyimpan data');
@@ -130,46 +137,143 @@
                 })
         }
 
-        function deleteForm(url) {
-            if (confirm('Yakin ingin menghapus data terpilih?')) {
+        async function deleteForm(url) {
+            const result = await Swal.fire({
+                title: "Yakin ingin menghapus data?",
+                text: "Data yang dihapus tidak akan kembali!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Hapus"
+            });
+
+            if (result.isConfirmed) {
                 $.post(url, {
                     '_token': $('[name=csrf-token]').attr('content'),
                     '_method': 'delete'
                 })
                 .done((response) => {
                     table.ajax.reload();
+                    Swal.fire({
+                        icon: "success",
+                        title: "Data berhasil dihapus",
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
                 })
                 .fail((errors) => {
-                    alert('Tidak dapat menghapus data');
-                    return;
+                    Swal.fire({
+                        icon: "error",
+                        title: "Perhatian!",
+                        text: "Tidak dapat menghapus data!",
+                    });
                 });
             }
         }
+        async function deleteSelected(url) {
+            if($('input:checked').length > 1) {
 
-        function deleteSelected(url) {
-            if ($('input:checked').length > 1) {
-                if (confirm('Yakin ingin menghapus data terpilih?')) {
-                    $.post(url, $('.form-produk').serialize())
-                        .done((response) => {
-                            table.ajax.reload();
-                        })
-                        .fail((errors) => {
-                            alert('Tidak dapat menghapus data');
-                            return;
+                const result = await Swal.fire({
+                    title: "Yakin ingin menghapus data?",
+                    text: "Data yang dihapus tidak akan kembali!",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Hapus"
+                });
+    
+                if (result.isConfirmed) {
+                    $.post(url, {
+                        '_token': $('[name=csrf-token]').attr('content'),
+                        '_method': 'delete'
+                    })
+                    .done((response) => {
+                        table.ajax.reload();
+                        Swal.fire({
+                            icon: "success",
+                            title: "Data berhasil dihapus",
+                            showConfirmButton: false,
+                            timer: 1500
                         });
+                    })
+                    .fail((errors) => {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Perhatian!",
+                            text: "Tidak dapat menghapus data!",
+                        });
+                    });
                 }
             } else {
-                alert('Pilih data yang akan dihapus');
+                Swal.fire({
+                    icon: "warning",
+                    title: "Perhatian!",
+                    text: "Pilih data yang akan dihapus!",
+                });
                 return;
             }
         }
 
+        // async function deleteSelected(url) {
+        //     if ($('input:checked').length > 1) {
+        //         const result = await Swal.fire({
+        //         title: "Apakah kamu yakin ingin menghapus data terpilih?",
+        //         icon: "question",
+        //         showCancelButton: true,
+        //         confirmButtonText: 'Ok',
+        //         cancelButtonText: 'Cancel'
+        //         }).then((result) => {
+
+        //         if (result.isConfirmed) {
+        //             $.post(url, {
+        //                 '_token': $('[name=csrf-token]').attr('content'),
+        //                 '_method': 'delete'
+        //             })
+        //             .done((response) => {
+        //                 table.ajax.reload();
+        //                 Swal.fire({
+        //                     icon: "success",
+        //                     title: "Data berhasil dihapus",
+        //                     showConfirmButton: false,
+        //                     timer: 1500
+        //                 });
+        //             })
+        //             .fail((errors) => {
+        //                 Swal.fire({
+        //                     icon: "error",
+        //                     title: "Perhatian!",
+        //                     text: "Tidak dapat menghapus data!",
+        //                 });
+        //             });
+        //         }
+        //     });
+        //     } else {
+        //         Swal.fire({
+        //             icon: "warning",
+        //             title: "Perhatian!",
+        //             text: "Pilih data yang akan dihapus!",
+        //         });
+        //         return;
+        //     }
+            
+        // }
+
         function cetakBarcode (url) {
             if ($('input:checked').length < 1) {
-                alert('Pilih data yang akan dicetak');
+                Swal.fire({
+                    icon: "warning",
+                    title: "Perhatian!",
+                    text: "Pilih data yang akan dicetak!",
+                });
                 return; //kondisi jika menekan tombol cetak,tapi belum memilih
             } else if ($('input:checked').length < 3) {
-                alert('Pilih minimal 3 data untuk dicetak');
+                Swal.fire({
+                    icon: "warning",
+                    title: "Perhatian!",
+                    text: "Pilih minimal 3 data yang akan dicetak!",
+                });
                 return;  //kondisi jika memilih 1 point untuk dicetak,maka error lalu harus memilih 3 point
             } else {
                 $('.form-produk')

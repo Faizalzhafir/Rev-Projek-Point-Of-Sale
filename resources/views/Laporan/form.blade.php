@@ -28,7 +28,7 @@
             </div>
             
             <div class="modal-footer">
-                <button class="btn btn-sm btn-flat btn-primary"><i class="fa fa-save"></i> Save</button>
+                <button class="btn btn-sm btn-flat btn-primary "><i class="fa fa-save"></i> Save</button>
                 <button type="button" class="btn btn-sm btn-flat btn-warning" data-dismiss="modal"><i class="fa fa-arrow-circle-left"></i> Close</button>
             </div>
         </div><!-- /.modal-content -->

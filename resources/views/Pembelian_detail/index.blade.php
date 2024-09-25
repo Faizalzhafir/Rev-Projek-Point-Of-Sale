@@ -124,7 +124,7 @@
             </div>
 
             <div class="box-footer">
-                <button type="submit" class="btn btn-primary btn-sm btn-flat pull-right btn-simpan"><i class="fa fa-floppy-o"></i>  Simpan Transaksi</button>
+                <button type="submit" class="btn btn-primary btn-sm btn-flat pull-right btn-simpan"><i class="fa fa-floppy-o"></i> Simpan Transaksi</button>
             </div>
         </div>
     </div>
@@ -134,6 +134,7 @@
 @endsection
 
 @push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     let table, table2;
 
@@ -172,12 +173,18 @@
 
             if (jumlah < 1) {
                 $(this).val(1);
-                alert('Jumlah tidak boleh kurang dari 1');
+                Swal.fire({
+                    icon: "warning",
+                    title: "Jumlah tidak boleh kurang dari 1"
+                });
                 return;
             }
             if (jumlah > 10000) {
                 $(this).val(10000);
-                alert('Jumlah tidak boleh lebih dari 10000');
+                Swal.fire({
+                    icon: "warning",
+                    title: "Jumlah tidak boleh lebih dari 10.000"
+                });
                 return;
             }
 
@@ -192,7 +199,10 @@
                     });
                 })
                 .fail(errors => {
-                    alert('Tidak dapat menyimpan data');
+                    Swal.fire({
+                        icon: "warning",
+                        title: "Jumlah tidak boleh kosong!"
+                    });
                     return;
                 });
             });
@@ -207,6 +217,12 @@
 
             $('.btn-simpan').on('click', function () {
                 $('.form-pembelian').submit();
+                    Swal.fire({
+                        icon: "success",
+                        title: "Transaksi berhasil disimpan!",
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
             });
 
         $(document).on('input', '#diskon', function () {
@@ -249,21 +265,40 @@
             });
     }
 
-    function deleteForm(url) {
-        if (confirm('Yakin ingin menghapus data terpilih?')) {
-            $.post(url, {
+    async function deleteForm(url) {
+            const result = await Swal.fire({
+                title: "Yakin ingin menghapus data?",
+                // text: "Data yang dihapus tidak akan kembali!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Hapus"
+            });
+
+            if (result.isConfirmed) {
+                $.post(url, {
                     '_token': $('[name=csrf-token]').attr('content'),
                     '_method': 'delete'
                 })
                 .done((response) => {
-                    table.ajax.reload(() => loadForm($('#diskon').val()));
+                    table.ajax.reload();
+                    Swal.fire({
+                        icon: "success",
+                        title: "Data berhasil dihapus",
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
                 })
                 .fail((errors) => {
-                    alert('Tidak dapat menghapus data');
-                    return;
+                    Swal.fire({
+                        icon: "error",
+                        title: "Perhatian!",
+                        text: "Tidak dapat menghapus data!",
+                    });
                 });
+            }
         }
-    }
 
     function loadForm(diskon = 0) {
         $('#total').val($('.total').text());

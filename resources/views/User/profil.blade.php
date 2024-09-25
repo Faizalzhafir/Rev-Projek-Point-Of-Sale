@@ -16,10 +16,6 @@
             <form action="{{ route('user.update_profil') }}" method="post" class="form-profil" data-toggle="validator" enctype="multipart/form-data">
                 @csrf
                 <div class="box-body">
-                    <div class="alert alert-success alert-dismissible" style="display: none;">
-                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                        <i class="icon fa fa-check"></i> Perubahan berhasil disimpan
-                    </div>
                     <div class="form-group row">
                         <label for="name" class="col-lg-2  col-lg-offset-1 control-label">Nama</label>
                         <div class="col-lg-6">
@@ -74,6 +70,7 @@
 @endsection
 
 @push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     $(function () {
         $('#old_password').on('keyup', function () {
@@ -96,16 +93,23 @@
                     $('.tampil-foto').html(`<img src="{{ url('/') }}${response.foto}" width="200">`);
                     $('.img-profil').attr('src', `{{ url('/') }}${response.foto}`);
 
-                    $('.alert').fadeIn();
-                    setTimeout(() => {
-                        $('.alert').fadeOut();
-                    }, 3000);
+                    Swal.fire({
+                        icon: "success",
+                        title: "Perubahan berhasil disimpan!",
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
                 })
                 .fail(errors => {
                     if (errors.status == 422) {
                         alert(errors.responseJSON); 
                     } else {
-                        alert('Tidak dapat menyimpan data');
+                       Swal.fire({
+                        icon: "warning",
+                        title: "Tidak dapat menyimpan data!",
+                        showConfirmButton: false,
+                        timer: 1500
+                        });
                     }
                     return;
                 });

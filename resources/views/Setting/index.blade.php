@@ -16,10 +16,6 @@
                 <form action="{{ route('setting.update') }}" method="post" class="form-setting" data-toggle="validator" enctype="multipart/form-data">
                     @csrf
                     <div class="box-body">
-                        <div class="alert alert-success alert-dismissible" style="display: none;">
-                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                            <i class="icon fa fa-check"></i>  Perubahan berhasil disimpan
-                        </div>
                         <div class="form-group row">
                             <label for="nama_perusahaan" class="col-lg-2 col-lg-offset-1 control-label">Nama Perusahaan</label>
                             <div class="col-lg-6">
@@ -90,6 +86,7 @@
 @endsection
 
 @push('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         $(function () {
             showData();
@@ -106,11 +103,12 @@
                     })
                     .done(response => {
                         showData();
-                        $('.alert').fadeIn();
-
-                        setTimeout(() => {
-                            $('.alert').fadeOut();
-                        }, 3000);
+                        Swal.fire({
+                            icon: "success",
+                            title: "Perubahan berhasil disimpan!",
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
                     })
                     .fail(errors => {
                         alert('Tidak dapat menyimpan data');

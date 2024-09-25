@@ -17,7 +17,7 @@
         background: #f0f0f0;
     }
 
-    .table-pembelian tbody tr:last-child {
+    .table-penjualan tbody tr:last-child {
         display: none;
     }
 
@@ -145,6 +145,7 @@
 @endsection
 
 @push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     let table, table2;
 
@@ -220,18 +221,6 @@
                 loadForm($(this).val());
             });
 
-            $('.btn-simpan').on('click', function () {
-                $('.form-penjualan').submit();
-            });
-
-            $(document).on('input', '#diskon', function () {
-                if ($(this).val() == "") {
-                    $(this).val(0).select();
-                }
-
-                loadForm($(this).val());
-            });
-
             $('#diterima').on('input', function () {
                 if ($(this).val() == "") {
                     $(this).val(0).select();
@@ -243,7 +232,8 @@
             });
 
             $('.btn-simpan').on('click', function () {
-                $('.form-pembelian').submit();
+                $('.form-penjualan').submit();
+                
             })
     });
 
@@ -328,6 +318,7 @@
             })
             .fail(errors => {
                 alert('Tidak dapat menampilkan data');
+                return;
             });
     }
 

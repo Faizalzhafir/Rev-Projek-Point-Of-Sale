@@ -138,9 +138,7 @@ class ProductController extends Controller
     {
         foreach ($request->id_produk as $id) {
             $product = Product::find($id);
-            if ($product) {
-                $product->delete();
-            }
+            $product = delete();
         }
 
         return response(null, 204);

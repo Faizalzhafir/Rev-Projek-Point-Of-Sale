@@ -22,7 +22,7 @@
         </li>
 
         @if (auth()->user()->level == 1)
-        <li class="header">Master</li>
+        <li class="header">MASTER</li>
         <li>
           <a href="{{ route('category.index')}}">
           <i class="fa fa-cube"></i> <span>Kategori</span>
@@ -43,7 +43,7 @@
           <i class="fa fa-truck"></i> <span>Supplier</span>
           </a>
         </li>
-        <li class="header">Transaksi</li>
+        <li class="header">TRANSAKSI</li>
         <li>
           <a href="{{ route('pengeluaran.index') }}">
           <i class="fa fa-money"></i> <span>Pengeluaran</span>
@@ -69,7 +69,7 @@
           <i class="fa fa-cart-arrow-down"></i> <span>Transaksi Baru</span>
           </a>
         </li>
-        <li class="header">Laporan</li>
+        <li class="header">LAPORAN</li>
         <li>
           <a href="{{ route('laporan.index') }}">
           <i class="fa fa-file-pdf-o"></i> <span>Laporan</span>

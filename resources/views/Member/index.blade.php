@@ -45,6 +45,7 @@
 @endsection
 
 @push('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         let table;
 
@@ -74,6 +75,12 @@
                     .done((response) => {
                         $('#modal-form').modal('hide');
                         table.ajax.reload();
+                        Swal.fire({
+                        icon: "success",
+                        title: "Member berhasil disimpan!",
+                        showConfirmButton: false,
+                        timer: 1500
+                        });
                     })
                     .fail((errors) => {
                         alert('Tidak dapat menyimpan data');
@@ -121,26 +128,48 @@
                 })
         }
 
-        function deleteForm(url) {
-           if (confirm('Yakin ingin menghapus data terpilih?')) {
-            $.post(url, {
-                '_token': $('[name=csrf-token').attr('content'),
-                '_method': 'delete'
-                
-            })
-            .done((response) => {
-                table.ajax.reload();
-            })
-            .fail((errors) => {
-                alert('Tidak dapat menghapus data');
-                return;
-            })
-           }
+        async function deleteForm(url) {
+            const result = await Swal.fire({
+                title: "Yakin ingin menghapus data?",
+                text: "Data yang dihapus tidak akan kembali!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Hapus"
+            });
+
+            if (result.isConfirmed) {
+                $.post(url, {
+                    '_token': $('[name=csrf-token]').attr('content'),
+                    '_method': 'delete'
+                })
+                .done((response) => {
+                    table.ajax.reload();
+                    Swal.fire({
+                        icon: "success",
+                        title: "Data berhasil dihapus",
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                })
+                .fail((errors) => {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Perhatian!",
+                        text: "Tidak dapat menghapus data!",
+                    });
+                });
+            }
         }
 
         function cetakMember (url) {
             if ($('input:checked').length < 1) {
-                alert('Pilih data yang akan dicetak');
+                Swal.fire({
+                        icon: "warning",
+                        title: "Perhatian!",
+                        text: "Pilih data yang akan dicetak!",
+                    });
                 return; //kondisi jika menekan tombol cetak,tapi belum memilih
             } else {
                 $('.form-member')

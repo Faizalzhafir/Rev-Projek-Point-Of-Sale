@@ -16,7 +16,8 @@ class PenjualanController extends Controller
     }
 
     public function data() {
-        $penjualan = Penjualan::with('member')->orderBy('id_penjualan', 'desc')->get();
+        $penjualan = Penjualan::with('member')->where('bayar', '>', '0')->orderBy('id_penjualan', 'desc')->get();
+        //untuk where,maka akan menampilkan bayar yang lebih dari 0,jika tidak,transaksi yang belum diinputkan,muncul di data,dan bernilai null
 
 
         return datatables()
@@ -36,7 +37,7 @@ class PenjualanController extends Controller
             })
             ->addColumn('kode_member', function ($penjualan) {
                 $member = $penjualan->member->kode_member ?? '';
-                return '<span class="label label-success">'. $member .'</spa>';
+                return '<span class="label label-success">'. $member .'</span>';
             })
             ->editColumn('diskon', function ($penjualan) {
                 return $penjualan->diskon . '%';

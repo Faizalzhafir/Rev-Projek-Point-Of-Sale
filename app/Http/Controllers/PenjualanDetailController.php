@@ -27,7 +27,7 @@ class PenjualanDetailController extends Controller
             if (auth()->user()->level == 0) {
                 return redirect()->route('transaksi.baru'); 
             } else {
-                return redirect()->route('home');
+                return redirect()->route('dashboard');
             }
        }
        
@@ -56,7 +56,7 @@ class PenjualanDetailController extends Controller
                                        </div>';
                 $data[] = $row;
 
-                $total += $item->harga_jual * $item->jumlah;
+                $total += $item->harga_jual * $item->jumlah - (($item->diskon * $item->jumlah) / 100 * $item->harga_jual);
                 $total_item += $item->jumlah;
             }
             $data[] = [

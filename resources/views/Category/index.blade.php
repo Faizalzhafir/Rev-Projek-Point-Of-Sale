@@ -37,6 +37,7 @@
 @endsection
 
 @push('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         let table;
 
@@ -62,6 +63,12 @@
                     .done((response) => {
                         $('#modal-form').modal('hide');
                         table.ajax.reload();
+                        Swal.fire({
+                        icon: "success",
+                        title: "Kategori berhasil disimpan!",
+                        showConfirmButton: false,
+                        timer: 1500
+                        });
                     })
                     .fail((errors) => {
                         alert('Tidak dapat menyimpan data');
@@ -81,6 +88,7 @@
             $('#modal-form form').attr('action', url);
             $('#modal-form [name=_method]').val('post');
             $('#modal-form [name=nama_produk]').focus();
+            
         }
 
         function editForm(url) {
@@ -102,21 +110,41 @@
                 })
         }
 
-        function deleteForm(url) {
-           if (confirm('Yakin ingin menghapus data terpilih?')) {
-            $.post(url, {
-                '_token': $('[name=csrf-token').attr('content'),
-                '_method': 'delete'
-                
-            })
-            .done((response) => {
-                table.ajax.reload();
-            })
-            .fail((errors) => {
-                alert('Tidak dapat menghapus data');
-                return;
-            })
-           }
+        async function deleteForm(url) {
+            const result = await Swal.fire({
+                title: "Yakin ingin menghapus data?",
+                text: "Data yang dihapus tidak akan kembali!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Hapus"
+            });
+
+            if (result.isConfirmed) {
+                $.post(url, {
+                    '_token': $('[name=csrf-token]').attr('content'),
+                    '_method': 'delete'
+                })
+                .done((response) => {
+                    table.ajax.reload();
+                    Swal.fire({
+                        icon: "success",
+                        title: "Data berhasil dihapus",
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                })
+                .fail((errors) => {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Perhatian!",
+                        text: "Kategori tidak dapat dihapus, karena kategori telah terpakai",
+                    });
+                });
+            }
         }
+
+
     </script>
 @endpush
