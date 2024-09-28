@@ -25,7 +25,7 @@
                         <table class="table table-striped table-bordered">
                             <thead>
                                 <tr>
-                                    <th  width="5%">
+                                    <th width="5%">
                                         <input type="checkbox" name="select_all" id="select_all">
                                     </th>
                                     <th width="5%">No</th>
@@ -57,7 +57,9 @@
 
         $(function () {
             table = $('.table').DataTable({
+                responsive: true,
                 processing: true,
+                serverSide: true,
                 autoWidth: false,
                 ajax: {
                     url: '{{ route('product.data') }}',
@@ -77,29 +79,49 @@
                 ]
             });
 
+            
             $('#modal-form').validator().on('submit', function (e) {
-                if (! e.preventDefault()) {
+                if (!e.preventDefault()) {
                     $.post($('#modal-form form').attr('action'), $('#modal-form form').serialize())
-                    .done((response) => {
-                        $('#modal-form').modal('hide');
-                        table.ajax.reload();
-                        Swal.fire({
-                        icon: "success",
-                        title: "Produk berhasil disimpan!",
-                        showConfirmButton: false,
-                        timer: 1500
+                        .done((response) => {
+                            $('#modal-form').modal('hide');
+                            table.ajax.reload();
+                            Swal.fire({
+                                icon: "success",
+                                title: "Produk berhasil disimpan!",
+                                showConfirmButton: false,
+                                timer: 1500
+                            });
+                        })
+                        .fail((errors) => {
+                            alert('Tidak dapat menyimpan data');
                         });
-                    })
-                    .fail((errors) => {
-                        alert('Tidak dapat menyimpan data');
-                        return;
-                    });
                 }
             });
 
             $('[name=select_all]').on('click', function () {
                 $(':checkbox').prop('checked', this.checked);
             });
+
+            function formatCurrency(value) {
+        return value
+            .replace(/\D/g, '') // Hanya angka
+            .replace(/\B(?=(\d{3})+(?!\d))/g, "."); // Tambahkan titik sebagai pemisah ribuan
+        };
+
+        // Event keyup untuk otomatis memformat saat mengetik
+        $('#modal-form').on('keyup', '[name=harga_beli], [name=harga_jual]', function () {
+            let value = $(this).val();
+            $(this).val(formatCurrency(value)); // Format nilai saat mengetik
+        });
+
+        // Event submit untuk memastikan titik dihapus sebelum data dikirim ke server
+        $('#modal-form').on('submit', function() {
+            $('[name=harga_beli], [name=harga_jual]').each(function() {
+                let value = $(this).val().replace(/\./g, ''); // Hapus titik sebelum submit
+                $(this).val(value); // Set nilai tanpa titik
+        });
+    });
         });
 
         function addForm(url) {
@@ -143,9 +165,10 @@
                 text: "Data yang dihapus tidak akan kembali!",
                 icon: "warning",
                 showCancelButton: true,
-                confirmButtonColor: "#3085d6",
-                cancelButtonColor: "#d33",
-                confirmButtonText: "Hapus"
+                confirmButtonColor: "#d33",
+                cancelButtonColor: "#3085d6",
+                confirmButtonText: "Hapus",
+                cancelButtonText: "Batal"
             });
 
             if (result.isConfirmed) {
@@ -171,40 +194,39 @@
                 });
             }
         }
-        async function deleteSelected(url) {
-            if($('input:checked').length > 1) {
 
+        async function deleteSelected(url) {
+            const checkedInputs = $('input:checked');
+
+            if (checkedInputs.length > 0) {
                 const result = await Swal.fire({
-                    title: "Yakin ingin menghapus data?",
-                    text: "Data yang dihapus tidak akan kembali!",
+                    title: "Yakin ingin menghapus data terpilih?",
                     icon: "warning",
                     showCancelButton: true,
                     confirmButtonColor: "#3085d6",
                     cancelButtonColor: "#d33",
-                    confirmButtonText: "Hapus"
+                    confirmButtonText: "Hapus",
+                    cancelButtonText: "Batal"
                 });
-    
+
                 if (result.isConfirmed) {
-                    $.post(url, {
-                        '_token': $('[name=csrf-token]').attr('content'),
-                        '_method': 'delete'
-                    })
-                    .done((response) => {
-                        table.ajax.reload();
-                        Swal.fire({
-                            icon: "success",
-                            title: "Data berhasil dihapus",
-                            showConfirmButton: false,
-                            timer: 1500
+                    $.post(url, $('.form-produk').serialize())
+                        .done((response) => {
+                            table.ajax.reload();
+                            Swal.fire({
+                                icon: "success",
+                                text: "Data berhasil dihapus",
+                                showConfirmButton: false,
+                                timer: 1500
+                            });
+                        })
+                        .fail((errors) => {
+                            Swal.fire({
+                                icon: "error",
+                                title: "Perhatian!",
+                                text: "Tidak dapat menghapus data!",
+                            });
                         });
-                    })
-                    .fail((errors) => {
-                        Swal.fire({
-                            icon: "error",
-                            title: "Perhatian!",
-                            text: "Tidak dapat menghapus data!",
-                        });
-                    });
                 }
             } else {
                 Swal.fire({
@@ -212,10 +234,10 @@
                     title: "Perhatian!",
                     text: "Pilih data yang akan dihapus!",
                 });
-                return;
             }
         }
 
+    
         // async function deleteSelected(url) {
         //     if ($('input:checked').length > 1) {
         //         const result = await Swal.fire({

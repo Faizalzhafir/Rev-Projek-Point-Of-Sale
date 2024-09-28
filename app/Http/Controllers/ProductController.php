@@ -37,14 +37,26 @@ class ProductController extends Controller
                 return '<span class="label label-success">'. $product->kode_produk .'</span>';
             })
             ->addColumn('harga_beli', function ($product) {
-                return format_uang($product->harga_beli);
+                //Format angka dengan pemisah ribuan
+                return number_format($product->harga_beli, 0, ',', '.');
             })
             ->addColumn('harga_jual', function ($product) {
-                return format_uang($product->harga_jual);
+                //Format angka dengan pemisah ribuan
+                return number_format($product->harga_jual, 0, ',', '.');
             })
             ->addColumn('stok', function ($product) {
                 return format_uang($product->stok);
             })
+            ->addColumn('keterangan', function ($product) {
+                if ($product->stok < 1) {
+                    return '<span class="label label-danger">'. 'STOK HABIS' .'</span>';
+                } elseif ($product->stok < 21) {
+                    return '<span class="label label-warning">'. 'STOK KURANG' .'</span>';
+                } elseif ($product->stok > 20 ) {
+                    return '<span class="label label-primary">'. 'STOK CUKUP' .'</span>';
+                } //jika variabel produk bagian stok kurang dari 1,maka tampilkan codenya
+                return '';  //Jika stok masih ada, sebaiknya mengembalikan nilai yang jelas (misalnya, string kosong).
+            }) //fungsi untuk membuat keterangan stok habis, keterangan merupakan nama column dan nantinya ditampilkan di data,lalu fungsi produk menerima dari variabel produk,yang nantinya dapat menentukan data apa yang akan dimanipulasi dan dipakai
             ->addColumn('action', function ($product) {
                 return '
                 <div class="btn-group">
@@ -53,7 +65,7 @@ class ProductController extends Controller
                 </div>                
                 ';
             })
-            ->rawColumns(['action', 'kode_produk', 'select_all'])
+            ->rawColumns(['action', 'kode_produk', 'select_all', 'keterangan' ])
             ->make(true);
     }
 
@@ -72,10 +84,17 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        $product = Product::latest()->first();
+        // Hilangkan titik pada harga_beli dan harga_jual sebelum disimpan
+        $request->merge([
+            'harga_beli' => str_replace('.', '', $request->harga_beli),
+            'harga_jual' => str_replace('.', '', $request->harga_jual),
+
+        ]);
+
+        $product = Product::latest()->first() ?? new Product();
         $request['kode_produk'] = 'P'. tambah_nol_didepan((int)$product->id_produk + 1, 6); // Membuat kode produk unik
         $product = Product::create($request->all());
-         //apabila kita menemukan nullattempt to read property,itu karena pada saat pengisian memeberikan nilai null,sehingga menghasilkan error untuk mengatasinya tambahkan ?? new Model; agar langsung dpat diterima oleh sistem dan membuat data baru
+         //apabila kita menemukan null attempt to read property,itu karena pada saat pengisian memeberikan nilai null,sehingga menghasilkan error untuk mengatasinya tambahkan ?? new Model; agar langsung dpat diterima oleh sistem dan membuat data baru
 
         return response()->json('Data berhasil disimpan', 200);
     }
@@ -89,7 +108,7 @@ class ProductController extends Controller
 
         if (!$product) {
             return response()->json(['error' => 'Product not found'], 404);
-        }
+        } //kondisi apabila produk yan akan diedit tidak ditemukan,maka tampilkan ini
 
         return response()->json($product);
     }
@@ -138,7 +157,12 @@ class ProductController extends Controller
     {
         foreach ($request->id_produk as $id) {
             $product = Product::find($id);
-            $product = delete();
+
+            if (!$product) {
+                return response()->json(['error' => 'Product not found'], 404);
+            }
+            
+            $product->delete();
         }
 
         return response(null, 204);

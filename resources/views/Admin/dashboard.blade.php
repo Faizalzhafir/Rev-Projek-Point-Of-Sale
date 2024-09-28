@@ -82,23 +82,6 @@
           <div class="box">
             <div class="box-header with-border">
               <h3 class="box-title">Grafik Pendapatan {{ tanggal_indonesia($tanggal_awal, false) }} s/d {{ tanggal_indonesia($tanggal_akhir, false) }}</h3>
-
-              <!-- <div class="box-tools pull-right">
-                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
-                </button>
-                <div class="btn-group">
-                  <button type="button" class="btn btn-box-tool dropdown-toggle" data-toggle="dropdown">
-                    <i class="fa fa-wrench"></i></button>
-                  <ul class="dropdown-menu" role="menu">
-                    <li><a href="#">Action</a></li>
-                    <li><a href="#">Another action</a></li>
-                    <li><a href="#">Something else here</a></li>
-                    <li class="divider"></li>
-                    <li><a href="#">Separated link</a></li>
-                  </ul>
-                </div>
-                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
-              </div> -->
             </div>
             <!-- /.box-header -->
             <div class="box-body">
@@ -122,14 +105,64 @@
         </div>
         <!-- /.col -->
       </div>
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="box">
+            <div class="box-body table-responsive">
+                          <form action="" method="post" class="form-produk">
+                              @csrf
+                              <table class="table table-striped table-bordered">
+                                  <thead>
+                                    <h3 style="text-align: center;">Informasi Stok</h3>
+                                    <br>
+                                      <tr>
+                                          <th width="5%">No</th>
+                                          <th>Kode</th>
+                                          <th>Nama</th>
+                                          <th>Kategori</th>
+                                          <th>Merk</th>
+                                          <th>Stok</th>
+                                          <th>Keterangan</th>
+                                      </tr>
+                                  </thead>
+                              </table>
+                          </form>
+                      </div>
+          </div>
+        </div>
+      </div>
       <!-- /.row (main row) -->
 @endsection
-<!-- sehingga pada saat pemanggilan sudah dinamis,sudah mengambil adri kelas turunannya,bukan dari kelas parent(induk) nya -->
+<!-- sehingga pada saat pemanggilan sudah dinamis,sudah mengambil dari kelas turunannya,bukan dari kelas parent(induk) nya -->
 
 @push('scripts')
   <!-- ChartJS -->
 <script src="{{ asset('AdminLTE-2/bower_components/chart.js/Chart.js') }}"></script>
 <script>
+    let table;
+
+    $(function () {
+        table = $('.table').DataTable({
+            responsive: true,
+            processing: true,
+            serverSide: true,
+            autoWidth: false,
+            ajax: {
+                url: '{{ route('product.data') }}',
+            },
+            columns: [
+                {data: 'DT_RowIndex', searchable: false, orderable: false},
+                {data: 'kode_produk'},
+                {data: 'nama_produk'},
+                {data: 'nama_kategori'},
+                {data: 'merk'},
+                {data: 'stok'},
+                {data: 'keterangan'},
+            ]
+        });
+
+    })
+
 $(function() {
     // Get context with jQuery - using jQuery's .get() method.
     var salesChartCanvas = $('#salesChart').get(0).getContext('2d');

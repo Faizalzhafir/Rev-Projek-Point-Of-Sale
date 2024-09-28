@@ -116,9 +116,10 @@
                 text: "Data yang dihapus tidak akan kembali!",
                 icon: "warning",
                 showCancelButton: true,
-                confirmButtonColor: "#3085d6",
-                cancelButtonColor: "#d33",
-                confirmButtonText: "Hapus"
+                confirmButtonColor: "#d33",
+                cancelButtonColor: "#3085d6",
+                confirmButtonText: "Hapus",
+                cancelButtonText: "Batal"
             });
 
             if (result.isConfirmed) {
@@ -139,7 +140,7 @@
                     Swal.fire({
                         icon: "error",
                         title: "Perhatian!",
-                        text: "Kategori tidak dapat dihapus, karena kategori telah terpakai",
+                        text: "Kategori tidak dapat dihapus, karena kategori telah digunakan",
                     });
                 });
             }

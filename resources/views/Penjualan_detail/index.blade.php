@@ -65,6 +65,7 @@
                         <th>Kode</th>
                         <th>Nama</th>
                         <th>Harga</th>
+                        <th>Stok</th>
                         <th width="15%">Jumlah</th>
                         <th>Diskon</th>
                         <th>Subtotal</th>
@@ -148,6 +149,7 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     let table, table2;
+    let isStokValid = true; // Variabel untuk validasi stok
 
     $(function () {
         $('body').addClass('sidebar-collapse');
@@ -165,6 +167,7 @@
                 {data: 'kode_produk'},
                 {data: 'nama_produk'},
                 {data: 'harga_jual'},
+                {data: 'stok'},
                 {data: 'jumlah'},
                 {data: 'diskon'},
                 {data: 'subtotal'},
@@ -180,20 +183,58 @@
                 $('#diterima').trigger('input');
             }, 300);
         });
-        table2 = $('.table-produk').DataTable();
+
+        // Fungsi untuk memeriksa stok
+        function checkStok() {
+        isStokValid = true; // Reset nilai sebelum pengecekan stok
+
+        // Cek stok untuk setiap produk dalam tabel
+        $('.table-penjualan tbody tr').each(function () {
+            let stokTersedia = parseInt($(this).find('.stok').text()); // Stok yang tersedia
+            let jumlah = parseInt($(this).find('.quantity').val()) || 0; // Jumlah yang diinput
+
+            if (jumlah > stokTersedia || stokTersedia === 0) {
+                isStokValid = false; // Stok tidak cukup atau habis
+                return false; // Hentikan pengecekan jika ada stok yang habis
+            }
+        });
+    }
 
         $(document).on('input', '.quantity', function () {
             let id = $(this).data('id');
             let jumlah = parseInt($(this).val());
+            let stok = parseInt($(this).parent().parent().find('.stok').text());
+
+            console.log(stok);
 
             if (jumlah < 1) {
                 $(this).val(1);
-                alert('Jumlah tidak boleh kurang dari 1');
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Jumlah Tidak Valid',
+                    text: 'Jumlah tidak boleh kurang dari 1',
+                    confirmButtonText: 'OK'
+                });
                 return;
             }
             if (jumlah > 10000) {
                 $(this).val(10000);
-                alert('Jumlah tidak boleh lebih dari 10000');
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Jumlah Tidak Valid',
+                    text: 'Jumlah tidak boleh lebih dari 10000',
+                    confirmButtonText: 'OK'
+                });
+                return;
+            }
+
+            if (stok < jumlah) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Stok Tidak Valid',
+                    text: 'Jumlah stok melebihi stok yang tersedia',
+                    confirmButtonText: 'OK'
+                });
                 return;
             }
 
@@ -203,38 +244,94 @@
                     'jumlah': jumlah
                 })
                 .done(response => {
-                    $(this).on('mouseout', function () {
-                        table.ajax.reload(() => loadForm($('#diskon').val()));
-                    });
+                    table.ajax.reload(() => loadForm($('#diskon').val()));
                 })
                 .fail(errors => {
-                    alert('Tidak dapat menyimpan data');
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal',
+                        text: 'Tidak dapat menyimpan data',
+                        confirmButtonText: 'OK'
+                    });
                     return;
                 });
-            });
+        });
 
-            $(document).on('input', '#diskon', function () {
-                if ($(this).val() == "") {
-                    $(this).val(0).select();
+
+        $(document).on('input', '#diskon', function () {
+            if ($(this).val() == "") {
+                $(this).val(0).select();
+            }
+            loadForm($(this).val());
+        });
+
+        $('#diterima').on('input', function () {
+            let value = $(this).val().replace(/\D/g, '');
+            if (value === "") {
+                $(this).val(0);
+                return;
+            }
+            $(this).val(new Intl.NumberFormat('id-ID').format(value));
+            loadForm($('#diskon').val(), value);
+        }).focus(function () {
+            $(this).select();
+        });
+
+        $('.btn-simpan').on('click', function (e) {
+            e.preventDefault();
+
+            checkStok(); // Cek validasi stok sebelum menyimpan
+
+            if (!isStokValid) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Stok Tidak Cukup!',
+                text: 'Tidak dapat menyimpan transaksi karena stok habis atau tidak mencukupi.',
+                confirmButtonText: 'OK'
+            });
+            return; // Hentikan proses simpan jika stok tidak cukup
+        }
+
+            // Ambil nilai total dan uang diterima
+            let totalBayar = parseFloat($('#bayar').val().replace(/[^0-9.-]+/g, ""));
+            let uangDiterima = parseFloat($('#diterima').val().replace(/\./g, '').replace(',', '.'));
+            // Debugging
+            console.log('Total Bayar:', totalBayar);
+            console.log('Uang Diterima:', uangDiterima);
+
+            if (isNaN(uangDiterima) || isNaN(totalBayar)) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Input Tidak Valid',
+                    text: 'Silakan masukkan angka yang valid untuk bayar dan diterima.',
+                    confirmButtonText: 'OK'
+                });
+                return;
+            }
+
+            if (uangDiterima < totalBayar) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal',
+                    text: 'Uang diterima tidak mencukupi untuk membayar total transaksi!',
+                    confirmButtonText: 'OK'
+                });
+                return;
+            }
+
+            Swal.fire({
+                title: 'Konfirmasi',
+                text: 'Apakah Anda yakin ingin menyimpan transaksi ini?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Ya, simpan!',
+                cancelButtonText: 'Tidak, batalkan'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $('.form-penjualan').submit();
                 }
-
-                loadForm($(this).val());
             });
-
-            $('#diterima').on('input', function () {
-                if ($(this).val() == "") {
-                    $(this).val(0).select();
-                }
-
-                loadForm($('#diskon').val(), $(this).val());
-            }).focus(function () {
-                $(this).select();
-            });
-
-            $('.btn-simpan').on('click', function () {
-                $('.form-penjualan').submit();
-                
-            })
+        });
     });
 
     function tampilProduk() {
@@ -277,13 +374,11 @@
         hideMember();
     }
 
-    
     function hideMember() {
         $('#modal-member').modal('hide');
     }
 
     function deleteForm(url) {
-        if (confirm('Yakin ingin menghapus data terpilih?')) {
             $.post(url, {
                     '_token': $('[name=csrf-token]').attr('content'),
                     '_method': 'delete'
@@ -295,8 +390,34 @@
                     alert('Tidak dapat menghapus data');
                     return;
                 });
-        }
     }
+
+    // function deleteData(url) {
+    //     Swal.fire({
+    //         title: 'Yakin ingin menghapus data terpilih?',
+    //         text: "Data yang dihapus tidak bisa dipulihkan!",
+    //         icon: 'warning',
+    //         showCancelButton: true,
+    //         confirmButtonColor: '#d33',
+    //         cancelButtonColor: '#3085d6',
+    //         confirmButtonText: 'Hapus',
+    //         cancelButtonText: 'Batal'
+    //     }).then((result) => {
+    //         if (result.isConfirmed) {
+    //             $.post(url, {
+    //                     '_token': $('[name=csrf-token]').attr('content'),
+    //                     '_method': 'delete'
+    //                 })
+    //                 .done((response) => {
+    //                     table.ajax.reload(() => loadForm($('#diskon').val()));
+    //                     Swal.fire('Terhapus!', 'Data berhasil dihapus.', 'success');
+    //                 })
+    //                 .fail((errors) => {
+    //                     Swal.fire('Gagal!', 'Tidak dapat menghapus data.', 'error');
+    //                 });
+    //         }
+    //     });
+    // }
 
     function loadForm(diskon = 0, diterima = 0) {
         $('#total').val($('.total').text());
@@ -304,15 +425,15 @@
 
         $.get(`{{ url('/transaksi/loadform') }}/${diskon}/${$('.total').text()}/${diterima}`)
             .done(response => {
-                $('#totalrp').val('Rp. '+ response.totalrp);
-                $('#bayarrp').val('Rp. '+ response.bayarrp);
+                $('#totalrp').val('Rp. ' + response.totalrp);
+                $('#bayarrp').val('Rp. ' + response.bayarrp);
                 $('#bayar').val(response.bayar);
-                $('.tampil-bayar').text('Bayar: Rp. '+ response.bayarrp);
+                $('.tampil-bayar').text('Bayar: Rp. ' + response.bayarrp);
                 $('.tampil-terbilang').text(response.terbilang);
 
-                $('#kembali').val('Rp.'+ response.kembalirp);
+                $('#kembali').val('Rp.' + response.kembalirp);
                 if ($('#diterima').val() != 0) {
-                    $('.tampil-bayar').text('Kembali: Rp. '+ response.kembalirp);
+                    $('.tampil-bayar').text('Kembali: Rp. ' + response.kembalirp);
                     $('.tampil-terbilang').text(response.kembali_terbilang);
                 }
             })
@@ -321,6 +442,5 @@
                 return;
             });
     }
-
 </script>
 @endpush

@@ -14,6 +14,8 @@ use App\Http\Controllers\{
     SettingController,
     SupplierController,
     UserController,
+    LandingController,
+    LoginController,
 };
 use Illuminate\Support\Facades\Route;
 
@@ -28,7 +30,14 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', fn () => redirect()->route('login'));
+Route::get('/', fn () => redirect()->route('landing'));
+
+Route::get('/landing', [LandingController::class, 'index'])->name('landing');
+Route::get('landing', [LandingController::class, 'index'])->name('landing');
+
+Route::get('/login', [LoginController::class, 'index'])->name('login');
+Route::get('login', [LoginController::class, 'index'])->name('login');
+
 
 Route::group(['middleware' => 'auth'], function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');

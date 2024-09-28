@@ -48,6 +48,7 @@ class PenjualanDetailController extends Controller
                 $row['kode_produk'] = '<span class="label label-success">' . $item->produk['kode_produk'] . '</span>';
                 $row['nama_produk'] = $item->produk['nama_produk'];
                 $row['harga_jual']  = 'Rp. ' . format_uang($item->harga_jual);
+                $row['stok']        = '<span class="stok">'.$item->produk->stok.'</span>';
                 $row['jumlah']      = '<input type="number" class="form-control input-sm quantity" data-id="'. $item->id_penjualan_detail .'"  value="' . $item->jumlah .'">';
                 $row['diskon']      = $item->diskon . '%';
                 $row['subtotal']    = 'Rp. ' . format_uang($item->subtotal);
@@ -65,6 +66,7 @@ class PenjualanDetailController extends Controller
                     <div class="total_item hide">'. $total_item .'<div>',
                 'nama_produk' => '',
                 'harga_jual'  => '',
+                'stok'        => '',
                 'jumlah'      => '',
                 'diskon'      => '',
                 'subtotal'    => '',
@@ -75,7 +77,7 @@ class PenjualanDetailController extends Controller
         return datatables()
             ->of($data)
             ->addIndexColumn()
-            ->rawColumns(['action', 'kode_produk', 'jumlah'])
+            ->rawColumns(['action', 'kode_produk', 'jumlah', 'stok'])
             ->make(true);
     }
 
@@ -127,5 +129,22 @@ class PenjualanDetailController extends Controller
         ];
 
         return response()->json($data);
+    }
+
+    public function checkStok($id_produk, $jumlah)
+    {
+        $product = Product::find($id_produk);
+
+        if ($product->stok < $jumlah) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Jumlah yang diminta melebihi stok yang tersedia!',
+            ]);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Stok tersedia!',
+        ]);
     }
 }
