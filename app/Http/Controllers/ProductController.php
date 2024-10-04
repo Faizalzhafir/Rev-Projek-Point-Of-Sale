@@ -38,11 +38,14 @@ class ProductController extends Controller
             })
             ->addColumn('harga_beli', function ($product) {
                 //Format angka dengan pemisah ribuan
-                return number_format($product->harga_beli, 0, ',', '.');
+                return 'Rp. ' . number_format($product->harga_beli, 0, ',', '.');
             })
             ->addColumn('harga_jual', function ($product) {
                 //Format angka dengan pemisah ribuan
-                return number_format($product->harga_jual, 0, ',', '.');
+                return 'Rp. ' . number_format($product->harga_jual, 0, ',', '.');
+            })
+            ->addColumn('diskon', function ($product) {
+                return $product->diskon . '%';
             })
             ->addColumn('stok', function ($product) {
                 return format_uang($product->stok);
@@ -65,7 +68,7 @@ class ProductController extends Controller
                 </div>                
                 ';
             })
-            ->rawColumns(['action', 'kode_produk', 'select_all', 'keterangan' ])
+            ->rawColumns(['action', 'kode_produk', 'select_all', 'keterangan', 'diskon' ])
             ->make(true);
     }
 

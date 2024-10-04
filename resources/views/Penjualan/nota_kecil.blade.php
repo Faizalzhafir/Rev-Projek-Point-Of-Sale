@@ -73,28 +73,39 @@
         @foreach ($detail as $item)
             <tr>
                 <td colspan="3">{{ $item->produk->nama_produk }}</td>
-            </tr>
-            <tr>
                 <td>{{ $item->jumlah }} x {{ format_uang($item->harga_jual) }}</td>
                 <td></td>
                 <td class="text-right">{{ format_uang($item->jumlah * $item->harga_jual) }}</td>
             </tr>
+            @if ($item->produk->diskon > 0)
+            <tr>
+                <td colspan="3" >Disc.{{ format_uang($item->produk->diskon) }}%</td>
+            </tr> 
+            @endif
         @endforeach
     </table>
     <p class="text-center">====================================</p>
 
     <table width="100%" style="border: 0;">
         <tr>
-            <td>Total Harga :</td>
-            <td class="text-right">{{ format_uang($penjualan->total_harga) }}</td>
-        </tr>
-        <tr>
             <td>Total Item :</td>
             <td class="text-right">{{ format_uang($penjualan->total_item) }}</td>
         </tr>
         <tr>
-            <td>Diskon :</td>
+            <td>Total Harga :</td>
+            <td class="text-right">{{ format_uang($penjualan->total_harga) }}</td>
+        </tr>
+        <tr>
+            <td>Diskon Produk:</td>
+            <td class="text-right"></td>
+        </tr>
+        <tr>
+            <td>Diskon Member:</td>
             <td class="text-right">{{ format_uang($penjualan->diskon) }}</td>
+        </tr>
+        <tr>
+            <td>Total Diskon:</td>
+            <td class="text-right"></td>
         </tr>
         <tr>
             <td>Total Bayar :</td>
@@ -105,7 +116,7 @@
             <td class="text-right">{{ format_uang($penjualan->diterima) }}</td>
         </tr>
         <tr>
-            <td>Kembali :</td>
+            <td>Kembali:</td>
             <td class="text-right">{{ format_uang($penjualan->diterima - $penjualan->bayar) }}</td>
         </tr>
     </table>

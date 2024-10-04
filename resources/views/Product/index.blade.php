@@ -37,6 +37,7 @@
                                     <th>Harga Jual</th>
                                     <th>Diskon</th>
                                     <th>Stok</th>
+                                    <th>Keterangan</th>
                                     <th width="15%"><i class="fa fa-cog"></i></th>
                                 </tr>
                             </thead>
@@ -75,6 +76,7 @@
                     {data: 'harga_jual'},
                     {data: 'diskon'},
                     {data: 'stok'},
+                    {data: 'keterangan'},
                     {data: 'action', orderable: false, searchable: false},
                 ]
             });
@@ -104,24 +106,24 @@
             });
 
             function formatCurrency(value) {
-        return value
-            .replace(/\D/g, '') // Hanya angka
-            .replace(/\B(?=(\d{3})+(?!\d))/g, "."); // Tambahkan titik sebagai pemisah ribuan
-        };
+                return value
+                    .replace(/\D/g, '') // Hanya angka
+                    .replace(/\B(?=(\d{3})+(?!\d))/g, "."); // Tambahkan titik sebagai pemisah ribuan
+            };
 
-        // Event keyup untuk otomatis memformat saat mengetik
-        $('#modal-form').on('keyup', '[name=harga_beli], [name=harga_jual]', function () {
-            let value = $(this).val();
-            $(this).val(formatCurrency(value)); // Format nilai saat mengetik
-        });
+            // Event keyup untuk otomatis memformat saat mengetik
+            $('#modal-form').on('keyup', '[name=harga_beli], [name=harga_jual]', function () {
+                let value = $(this).val();
+                $(this).val(formatCurrency(value)); // Format nilai saat mengetik
+            });
 
-        // Event submit untuk memastikan titik dihapus sebelum data dikirim ke server
-        $('#modal-form').on('submit', function() {
-            $('[name=harga_beli], [name=harga_jual]').each(function() {
-                let value = $(this).val().replace(/\./g, ''); // Hapus titik sebelum submit
-                $(this).val(value); // Set nilai tanpa titik
-        });
-    });
+            // Event submit untuk memastikan titik dihapus sebelum data dikirim ke server
+            $('#modal-form').on('submit', function() {
+                $('[name=harga_beli], [name=harga_jual]').each(function() {
+                    let value = $(this).val().replace(/\./g, ''); // Hapus titik sebelum submit
+                    $(this).val(value); // Set nilai tanpa titik
+                });
+            });
         });
 
         function addForm(url) {

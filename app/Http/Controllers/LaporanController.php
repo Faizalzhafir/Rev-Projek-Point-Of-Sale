@@ -42,10 +42,10 @@ class LaporanController extends Controller
             $row = array();
             $row['DT_RowIndex'] = $no++;
             $row['tanggal'] = tanggal_indonesia($tanggal, false);
-            $row['penjualan'] = format_uang($total_penjualan);
-            $row['pembelian'] = format_uang($total_pembelian);
-            $row['pengeluaran'] = format_uang($total_pengeluaran);
-            $row['pendapatan'] = format_uang($pendapatan);
+            $row['penjualan'] = 'Rp. ' . format_uang($total_penjualan);
+            $row['pembelian'] = 'Rp. ' . format_uang($total_pembelian);
+            $row['pengeluaran'] = 'Rp. ' . format_uang($total_pengeluaran);
+            $row['pendapatan'] = 'Rp. ' . format_uang($pendapatan);
 
             $data[] = $row;
         }
@@ -56,7 +56,7 @@ class LaporanController extends Controller
             'penjualan' => '', 
             'pembelian' => '',
             'pengeluaran' => 'Total Pendapatan',
-            'pendapatan' => format_uang($total_pendapatan),
+            'pendapatan' => 'Rp' . format_uang($total_pendapatan) . ',00',
         ];
 
         return $data;

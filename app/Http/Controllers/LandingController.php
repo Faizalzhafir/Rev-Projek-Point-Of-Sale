@@ -11,6 +11,7 @@ class LandingController extends Controller
     {
         $setting = Setting::first(); // Ambil data setting, atau sesuaikan cara pengambilan datanya
         return view('landing', compact('setting')); // Kirim variabel $setting ke view
+        //untuk mengambil data logo dan nama perusahaan yang nantinya ditampilkan di view
     }
 
     public function update(Request $request)

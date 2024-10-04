@@ -16,9 +16,10 @@ class SettingController extends Controller
     }
 
     public function update(Request $request) {
-        $setting = Setting::first();
+        $setting = Setting::first(); //mengambil data yang pertama dari tabel setting
         $setting->nama_perusahaan = $request->nama_perusahaan;
         $setting->telepon = $request->telepon;
+        $setting->email = $request->email;
         $setting->alamat = $request->alamat;
         $setting->diskon = $request->diskon;
         $setting->tipe_nota = $request->tipe_nota;

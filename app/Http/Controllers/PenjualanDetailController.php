@@ -34,53 +34,64 @@ class PenjualanDetailController extends Controller
     }
 
     public function data($id)
-    {
-        $detail = PenjualanDetail::with('produk')
-            ->where('id_penjualan', $id)
-            ->get();
-            $data = array();
-            $total = 0;
-            $total_item = 0;
+{
+    $detail = PenjualanDetail::with('produk')
+        ->where('id_penjualan', $id)
+        ->get();
 
+    // Ambil member terkait dengan penjualan
+    $penjualan = Penjualan::find($id);
+    $memberSelected = $penjualan->member ?? new Member();
 
-            foreach ($detail as $item) {
-                $row = array();
-                $row['kode_produk'] = '<span class="label label-success">' . $item->produk['kode_produk'] . '</span>';
-                $row['nama_produk'] = $item->produk['nama_produk'];
-                $row['harga_jual']  = 'Rp. ' . format_uang($item->harga_jual);
-                $row['stok']        = '<span class="stok">'.$item->produk->stok.'</span>';
-                $row['jumlah']      = '<input type="number" class="form-control input-sm quantity" data-id="'. $item->id_penjualan_detail .'"  value="' . $item->jumlah .'">';
-                $row['diskon']      = $item->diskon . '%';
-                $row['subtotal']    = 'Rp. ' . format_uang($item->subtotal);
-                $row['action']      = '<div class="btn-group">
-                                            <button onclick="deleteForm(`'. route('transaksi.destroy', $item->id_penjualan_detail).'`)" class="btn btn-xs btn-danger btn-flat"><i class="fa fa-trash"></i></button>
-                                       </div>';
-                $data[] = $row;
+    $data = array();
+    $total = 0;
+    $total_item = 0;
+    $total_diskon_produk = 0;
+    $total_diskon_member = 0;
 
-                $total += $item->harga_jual * $item->jumlah - (($item->diskon * $item->jumlah) / 100 * $item->harga_jual);
-                $total_item += $item->jumlah;
-            }
-            $data[] = [
-                'kode_produk' => '
-                    <div class="total hide">'. $total .'</div> 
-                    <div class="total_item hide">'. $total_item .'<div>',
-                'nama_produk' => '',
-                'harga_jual'  => '',
-                'stok'        => '',
-                'jumlah'      => '',
-                'diskon'      => '',
-                'subtotal'    => '',
-                'action'      => '',
-            ];
+    foreach ($detail as $item) {
+        $row = array();
+        $row['kode_produk'] = '<span class="label label-success">' . $item->produk['kode_produk'] . '</span>';
+        $row['nama_produk'] = $item->produk['nama_produk'];
+        $row['harga_jual']  = 'Rp. ' . format_uang($item->harga_jual);
+        $row['stok']        = '<span class="stok">'.$item->produk->stok.'</span>';
+        $row['jumlah']      = '<input type="number" class="form-control input-sm quantity" data-id="'. $item->id_penjualan_detail .'"  value="' . $item->jumlah .'">';
+        $row['diskon']      = $item->produk->diskon . '%';
+        $row['subtotal']    = 'Rp. ' . format_uang($item->subtotal);
+        $row['action']      = '<div class="btn-group">
+                                        <button onclick="deleteForm(`'. route('transaksi.destroy', $item->id_penjualan_detail).'`)" class="btn btn-xs btn-danger btn-flat"><i class="fa fa-trash"></i></button>
+                                   </div>';
+        $data[] = $row;
 
-
-        return datatables()
-            ->of($data)
-            ->addIndexColumn()
-            ->rawColumns(['action', 'kode_produk', 'jumlah', 'stok'])
-            ->make(true);
+        $total += $item->harga_jual * $item->jumlah;
+        // $total += $item->harga_jual * $item->jumlah - (($item->diskon * $item->jumlah) / 100 * $item->harga_jual);
+        $total_item += $item->jumlah;
+        $total_diskon_member += ($item->diskon * $item->jumlah) / 100 * $item->harga_jual; // menghitung total diskon dari semua item produk pada transaksi
+        $total_diskon_produk += ($item->produk->diskon * $item->jumlah) / 100 * $item->harga_jual;
     }
+    
+    // Pastikan untuk menghitung total_diskon_akhir di sini
+    // $total_diskon_akhir = $total_diskon_produk + ($memberSelected->diskon ?? 0);
 
+    $data[] = [
+        'kode_produk' => '
+            <div class="total hide">'. $total .'</div> 
+            <div class="total_item hide">'. $total_item .'</div>',
+        'nama_produk' => '',
+        'harga_jual'  => '',
+        'stok'        => '',
+        'jumlah'      => '',
+        'diskon'      => '',
+        'subtotal'    => '',
+        'action'      => '',
+    ];
+
+    return datatables()
+        ->of($data)
+        ->addIndexColumn()
+        ->rawColumns(['action', 'kode_produk', 'jumlah', 'stok'])
+        ->make(true);
+}
     
     public function store(Request $request) {
         $product = Product::where('id_produk', $request->id_produk)->first();
@@ -94,8 +105,8 @@ class PenjualanDetailController extends Controller
         $detail->id_produk = $product->id_produk;
         $detail->harga_jual = $product->harga_jual;
         $detail->jumlah = 1; 
-        $detail->diskon = 0;
-        $detail->subtotal = $product->harga_jual; 
+        $detail->diskon = $product->diskon; //mengambil data diskon yang ada di produk,dari variabel detail
+        $detail->subtotal = ($product->harga_jual * $detail->jumlah) - (($product->diskon / 100) * ($product->harga_jual * $detail->jumlah)) ; //mengambil subtotal hasil operasi harga jual dikurangi diskon yang dibagi 100,dikalikan dengan harga jualnya,ditambah dengan perhitungan dari setiap produknya
         $detail->save();
 
         return response()->json( 'Data berhasil disimpan', 200);
@@ -104,7 +115,7 @@ class PenjualanDetailController extends Controller
     public function update(Request $request, $id) {
         $detail = PenjualanDetail::find($id);
         $detail->jumlah = $request->jumlah;
-        $detail->subtotal = $detail->harga_jual * $request->jumlah; 
+        $detail->subtotal = $detail->harga_jual * $request->jumlah - (($detail->diskon * $request->jumlah) / 100 * $detail->harga_jual); 
         $detail->save();
     }
 
@@ -116,10 +127,16 @@ class PenjualanDetailController extends Controller
         return response(null, 204);
     }
 
-    public function loadForm($diskon = 0, $total, $diterima) {
-        $bayar = $total - ($diskon / 100 * $total);
+    public function loadForm($diskon = 0, $total = 0, $diterima = 0) {
+        $total_diskon_member = $total * ($diskon / 100);
+        $total_diskon_produk = $total * ($diskon / 100);
+        $total_diskon = $total_diskon_member + $total_diskon_produk;
+        $bayar = $total - $total_diskon;
         $kembali = ($diterima != 0) ? $diterima - $bayar : 0;
         $data = [
+            'total_diskon_member' => format_uang($total_diskon_member),
+            'total_diskon_produk' => format_uang($total_diskon_produk),
+            'total_diskon' => format_uang($total_diskon),
             'totalrp' => format_uang($total),
             'bayar' => $bayar,
             'bayarrp' => format_uang($bayar),

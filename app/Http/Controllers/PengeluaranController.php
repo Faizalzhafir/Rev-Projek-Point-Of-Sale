@@ -21,7 +21,7 @@ class PengeluaranController extends Controller
                 return tanggal_indonesia($pengeluaran->created_at, false);
             })
             ->addColumn('nominal', function ($pengeluaran) {
-                return format_uang($pengeluaran->nominal);
+                return 'Rp. ' . format_uang($pengeluaran->nominal);
             })
             ->addColumn('action', function ($pengeluaran) {
                 return '
@@ -37,6 +37,10 @@ class PengeluaranController extends Controller
 
     public function store(Request $request)
     {
+        // Hilangkan titik pada harga_beli dan harga_jual sebelum disimpan
+        $request->merge([
+            'nominal' => str_replace('.', '', $request->nominal)
+        ]);
         $pengeluaran = Pengeluaran::create($request->all());
 
         return response()->json('Data berhasil disimpan', 200);

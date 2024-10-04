@@ -81,7 +81,7 @@
         <div class="col-md-12">
           <div class="box">
             <div class="box-header with-border">
-              <h3 class="box-title">Grafik Pendapatan {{ tanggal_indonesia($tanggal_awal, false) }} s/d {{ tanggal_indonesia($tanggal_akhir, false) }}</h3>
+              <h3 class="box-title">Grafik Pendapatan {{ tanggal_indonesia($tanggal_awal_asli, false) }} s/d {{ tanggal_indonesia($tanggal_akhir_asli, false) }}</h3>
             </div>
             <!-- /.box-header -->
             <div class="box-body">
@@ -113,7 +113,7 @@
                               @csrf
                               <table class="table table-striped table-bordered">
                                   <thead>
-                                    <h3 style="text-align: center;">Informasi Stok</h3>
+                                    <h3 style="text-align: center; font-weight: bold;">Informasi Produk</h3>
                                     <br>
                                       <tr>
                                           <th width="5%">No</th>

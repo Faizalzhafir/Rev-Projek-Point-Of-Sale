@@ -32,6 +32,13 @@
                             </div>
                         </div>
                         <div class="form-group row">
+                            <label for="email" class="col-lg-2 col-lg-offset-1 control-label">Email</label>
+                            <div class="col-lg-6">
+                                <input type="email" name="email" class="form-control" id="email" required>
+                                <span class="help-block with-errors"></span>
+                            </div>
+                        </div>
+                        <div class="form-group row">
                             <label for="alamat" class="col-lg-2 col-lg-offset-1 control-label">Alamat</label>
                             <div class="col-lg-6">
                                 <textarea name="alamat" class="form-control" id="alamat" rows="3" required></textarea>
@@ -123,6 +130,7 @@
                 .done(response => {
                     $('[name=nama_perusahaan]').val(response.nama_perusahaan);
                     $('[name=telepon]').val(response.telepon);
+                    $('[name=email]').val(response.email);
                     $('[name=alamat]').val(response.alamat);
                     $('[name=diskon]').val(response.diskon);
                     $('[name=tipe_nota]').val(response.tipe_nota);

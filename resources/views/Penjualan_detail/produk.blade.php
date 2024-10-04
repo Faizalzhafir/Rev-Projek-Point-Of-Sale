@@ -20,7 +20,7 @@
                             <td width="5%">{{ $key+1 }}</td> 
                             <td><div class="span"><div class="label label-success">{{ $item->kode_produk }}</div></div></td>
                             <td>{{ $item->nama_produk }}</td>
-                            <td>{{ format_uang($item->harga_jual) }}</td>
+                            <td>Rp.{{ format_uang($item->harga_jual) }}</td>
                             <td>
                                 <a href="#" class="btn btn-primary btn-xs btn-flat"
                                     onclick="pilihProduk('{{ $item->id_produk }}', '{{ $item->kode_produk }}')">

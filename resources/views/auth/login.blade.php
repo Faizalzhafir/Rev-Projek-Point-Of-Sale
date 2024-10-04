@@ -1,4 +1,5 @@
 @extends('layouts.auth')
+<!-- extends disini berfungsi bahwa halaman ini nantinya akan mewarisi dari halaman yang diextends yaitu,layouts.auth,posisi di halaman ini diatur oeh yield di halaman yang diextends tersebut -->
 
 @section('login')
     <!DOCTYPE html>
@@ -308,3 +309,5 @@
 
     </html>
 @endsection
+
+<!-- section dan endsection diatas digunakan apabila konten yang ada didalam fungsi tersebut akan dirender atau ditampilkan di halaman lain,yang nantinya akan dimasukan ke halaman yang tertuju di extends -->

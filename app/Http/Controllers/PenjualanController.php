@@ -86,7 +86,7 @@ class PenjualanController extends Controller
         $penjualan->total_harga = $request->total;
         $penjualan->diskon = $request->diskon;
         $penjualan->bayar = $request->bayar;
-        $penjualan->diterima = $request->diterima;
+        $penjualan->diterima = str_replace('.','',$request->diterima);
         $penjualan->update();
     
         $detail = PenjualanDetail::where('id_penjualan', $penjualan->id_penjualan)->get();

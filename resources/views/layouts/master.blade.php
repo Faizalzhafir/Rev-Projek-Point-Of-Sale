@@ -48,7 +48,7 @@
       </h1>
       <ol class="breadcrumb">
         @section('breadcrumb')
-        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li><a href="{{ route('dashboard') }}"><i class="fa fa-dashboard"></i> Home</a></li>
         @show
       </ol>
     </section>

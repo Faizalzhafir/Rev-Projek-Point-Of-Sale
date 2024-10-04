@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" target="_blank" href="{{ url($setting->path_logo) }}" type="image/png">
-    <title>Landing Page</title>
+    <title>DIFFY | Landing Page</title>
     <!-- Sertakan Bootstrap -->
     <link target="_blank" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -488,6 +488,7 @@
                     <li class="nav-item">
                         <a class="nav-link" href="#tim11">Tim</a>
                     </li>
+                    <!-- setiap kali kita akan membuat perpindahan halaman,kita gunakaan href sebagai fungsi nya,untuk berpindah pada halaman yang sama,kita harus menyertakan '#' sebelum nama id yang akan tuju -->
                     <!-- Login Button -->
                     <li class="nav-itemm">
                         <a class="btn btn-outline-light ms-3"href="{{ route('login') }}">Login</a>
@@ -498,7 +499,7 @@
     </nav>
 
     <!-- Bagian Selamat Datang -->
-    <section class="beranda">
+    <section class="beranda" id="beranda">
         <div class="container-ber" data-aos="fade-up" data-aos-duration="1000">
             <h1 class="teks-ber">Selamat Datang</h1>
             <h1 class="teks-ber">di <span>{{ $setting->nama_perusahaan }}</span></h1>
@@ -512,9 +513,9 @@
             <img src="{{ asset('images/ftBeranda.png') }}" alt="" width="400px" height="400px">
         </div>
     </section>
+    <!-- section berfungsi untuk mengatur bagian mana saja yang akan ditampilkan jika id yang terpilih diklik pada view,sebagai batas pemisah setiap href yang diklik -->
 
-    <!-- Bagian Tim -->
-
+    <!-- Bagian Tentang -->
     <section class="tentang" id="tentang">
         <!-- Image Section -->
         <div class="img-ten" data-aos="fade-up" data-aos-duration="1000">
@@ -539,6 +540,7 @@
         </div>
     </section>
 
+    <!-- Bagian Tim -->
     <section class="tim" id="tim11">
         <h2 class="text-center">Tim 11</h2>
         <div class="tim-wrapper">
@@ -671,16 +673,20 @@
                 </div>
                 <div class="kasirrr">
                     <h5 class="teks-kami">SmartKasir</h5>
-                    <p>Jalan. Talagasari No. 35 Kawalimukti <br> Kawali Ciamis 46253</p>
+                    <a target="_blank" href="#">
+                        <p><img src="{{ asset('images/lok.png') }}" alt="" width="17px"
+                                height="25px">{{ $setting->alamat }}</p>
+                    </a>
                     <a target="_blank" href="https://wa.me/085727831822">
-                        <p><img src="{{ asset('images/phone.png') }}" alt="" width="10px"
-                                height="10px">085727831822</p>
+                        <p><img src="{{ asset('images/tel.png') }}" alt="" width="20px"
+                                height="20px">{{ $setting->telepon }}</p>
                     </a>
                     <a target="_blank" href="#">
-                        <p><img src="{{ asset('images/email.png') }}" alt="" width="10px"
-                                height="10px">SmartKasir@gmail.com</p>
+                        <p><img src="{{ asset('images/email.png') }}" alt="" width="20px"
+                                height="20px">{{ $setting->email }}</p>
                     </a>
                 </div>
+                <!-- setiap kali kita membutuhkan data untuk ditampilkan di view dari data yang sudah dibuat,semisal dari database (yang sudah ada) kita dapat memanggilnya dengan memanggil variabel yang sudah di dfinisikan sebelumna di controller dan pastinya juga ada hubungannya dengan model  -->
             </div>
 
         </div>

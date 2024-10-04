@@ -79,6 +79,26 @@
                 }
             });
             //pertama kita akan menlakukan aksi melalui url,mengguakan ajax,dengan type post,dan mengirimkan data melalui form,lalu buat manipulasi di controller utuk method store
+
+            function formatCurrency(value) {
+                return value
+                    .replace(/\D/g, '') // Hanya angka
+                    .replace(/\B(?=(\d{3})+(?!\d))/g, "."); // Tambahkan titik sebagai pemisah ribuan
+            };
+
+            // Event keyup untuk otomatis memformat saat mengetik
+            $('#modal-form').on('keyup', '[name=nominal]', function () {
+                let value = $(this).val();
+                $(this).val(formatCurrency(value)); // Format nilai saat mengetik
+            });
+
+            // Event submit untuk memastikan titik dihapus sebelum data dikirim ke server
+            $('#modal-form').on('submit', function() {
+                $('[name=nominal]').each(function() {
+                    let value = $(this).val().replace(/\./g, ''); // Hapus titik sebelum submit
+                    $(this).val(value); // Set nilai tanpa titik
+                });
+            });
         });
 
         function addForm(url) {

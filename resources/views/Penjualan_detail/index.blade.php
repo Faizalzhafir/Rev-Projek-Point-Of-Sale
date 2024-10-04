@@ -105,9 +105,21 @@
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <label for="diskon" class="col-lg-2 control-label">Diskon</label>
+                                <label for="diskon" class="col-lg-2 control-label">Diskon Member</label>
                                 <div class="col-lg-8">
                                     <input type="number" name="diskon" id="diskon" class="form-control" value="{{ ! empty($memberSelected->id_member) ? $diskon : 0}}" readonly>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="diskon" class="col-lg-2 control-label">Diskon Produk</label>
+                                <div class="col-lg-8">
+                                    <input type="number" name="total_diskon_produk" id="total_diskon_produk" class="form-control" value="" readonly>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="total_diskon" class="col-lg-2 control-label">Total Diskon</label>
+                                <div class="col-lg-8">
+                                    <input type="text" name="total_diskon" id="total_diskon" class="form-control"  readonly>
                                 </div>
                             </div>
                             <div class="form-group row">
@@ -266,12 +278,12 @@
         });
 
         $('#diterima').on('input', function () {
-            let value = $(this).val().replace(/\D/g, '');
+            let value = $(this).val().replace(/\D/g, ''); //Hapus karakter non digit
             if (value === "") {
                 $(this).val(0);
                 return;
             }
-            $(this).val(new Intl.NumberFormat('id-ID').format(value));
+            $(this).val(new Intl.NumberFormat('id-ID').format(value)); // Format Kembali
             loadForm($('#diskon').val(), value);
         }).focus(function () {
             $(this).select();
@@ -295,9 +307,11 @@
             // Ambil nilai total dan uang diterima
             let totalBayar = parseFloat($('#bayar').val().replace(/[^0-9.-]+/g, ""));
             let uangDiterima = parseFloat($('#diterima').val().replace(/\./g, '').replace(',', '.'));
-            // Debugging
+            let totalDiskon = ($('#total_diskon').val());
+            // Debugging 
             console.log('Total Bayar:', totalBayar);
             console.log('Uang Diterima:', uangDiterima);
+            console.log('Total Diskon: ', totalDiskon);
 
             if (isNaN(uangDiterima) || isNaN(totalBayar)) {
                 Swal.fire({
@@ -392,32 +406,6 @@
                 });
     }
 
-    // function deleteData(url) {
-    //     Swal.fire({
-    //         title: 'Yakin ingin menghapus data terpilih?',
-    //         text: "Data yang dihapus tidak bisa dipulihkan!",
-    //         icon: 'warning',
-    //         showCancelButton: true,
-    //         confirmButtonColor: '#d33',
-    //         cancelButtonColor: '#3085d6',
-    //         confirmButtonText: 'Hapus',
-    //         cancelButtonText: 'Batal'
-    //     }).then((result) => {
-    //         if (result.isConfirmed) {
-    //             $.post(url, {
-    //                     '_token': $('[name=csrf-token]').attr('content'),
-    //                     '_method': 'delete'
-    //                 })
-    //                 .done((response) => {
-    //                     table.ajax.reload(() => loadForm($('#diskon').val()));
-    //                     Swal.fire('Terhapus!', 'Data berhasil dihapus.', 'success');
-    //                 })
-    //                 .fail((errors) => {
-    //                     Swal.fire('Gagal!', 'Tidak dapat menghapus data.', 'error');
-    //                 });
-    //         }
-    //     });
-    // }
 
     function loadForm(diskon = 0, diterima = 0) {
         $('#total').val($('.total').text());
@@ -425,6 +413,10 @@
 
         $.get(`{{ url('/transaksi/loadform') }}/${diskon}/${$('.total').text()}/${diterima}`)
             .done(response => {
+                $('#total_diskon_member').val('Rp. ' + response.total_diskon_member);
+                $('#total_diskon_produk').val('Rp. ' + response.total_diskon_produk);
+                $('#total_diskon').val('Rp. ' + response.total_diskon);
+                console.log($('#total_diskon', '#total_diskon_member', 'total_diskon_produk').val());
                 $('#totalrp').val('Rp. ' + response.totalrp);
                 $('#bayarrp').val('Rp. ' + response.bayarrp);
                 $('#bayar').val(response.bayar);

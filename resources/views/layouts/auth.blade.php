@@ -31,6 +31,7 @@
 <body class="hold-transition login-page">
 
  @yield('login')
+ <!-- yield disini berfungsi untuk mengatur posisi dari section yang telah mewarisi ke halaman ini -->
 <!-- /.login-box -->
 
 <!-- jQuery 3 -->

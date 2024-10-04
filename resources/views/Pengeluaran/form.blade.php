@@ -22,7 +22,7 @@
                <div class="form-group row">
                 <label for="nominal" class="col-md-2 col-md-offset-1 control-label">Nominal</label>
                 <div class="col-md-9">
-                   <textarea name="nominal" id="nominal" class="form-control" rows="3"></textarea>
+                    <input type="text" name="nominal" id="nominal" class="form-control" required>
                     <span class="help-block with-errors"></span>
                 </div>
                </div>
