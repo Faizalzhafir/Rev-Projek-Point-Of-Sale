@@ -39,8 +39,8 @@ class PenjualanController extends Controller
                 $member = $penjualan->member->kode_member ?? '';
                 return '<span class="label label-success">'. $member .'</span>';
             })
-            ->editColumn('diskon', function ($penjualan) {
-                return $penjualan->diskon . '%';
+            ->editColumn('total_diskon', function ($penjualan) {
+                return 'Rp. ' . format_uang($penjualan->total_diskon);
             })
             ->editColumn('kasir', function ($penjualan) {
                 return $penjualan->user->name ?? '';
@@ -68,6 +68,7 @@ class PenjualanController extends Controller
         $penjualan->total_item = 0;
         $penjualan->total_harga = 0;
         $penjualan->diskon = 0;
+        $penjualan->total_diskon = 0;
         $penjualan->bayar = 0;
         $penjualan->diterima = 0;
         $penjualan->id_user = auth()->id(); //id user ambil berdasrkan login,menggunakan auth,jadi mendapatkan id berdasrkan user yang aktif
@@ -87,6 +88,28 @@ class PenjualanController extends Controller
         $penjualan->diskon = $request->diskon;
         $penjualan->bayar = $request->bayar;
         $penjualan->diterima = str_replace('.','',$request->diterima);
+
+        //Menentukan total diskon
+        $detail = PenjualanDetail::with('produk')->where('id_penjualan', $penjualan->id_penjualan)->get(); //Pengambilan diskon produk
+        $totalDiskon = 0;
+        $total = 0;
+
+        //Pengambilan nilai diskon dari member
+        $diskon = Setting::first()->diskon ?? 0;
+
+        foreach ($detail as $item) {
+            //Hitung diskon per item
+            $diskonItem = ($item->diskon / 100) * $item->harga_jual * $item->jumlah;
+            $totalDiskon += $diskonItem; //Tambahkan ke total diskon
+
+            $total += $item->harga_jual * $item->jumlah - (($item->diskon * $item->jumlah) / 100 * $item->harga_jual);
+        }
+
+        $diskonMember = $total * ($diskon / 100);
+        $diskonAll = $totalDiskon + $diskonMember;
+
+        $penjualan->total_diskon = $diskonAll; //Kode untuk mengisi kolom di database untuk total diskon
+
         $penjualan->update();
     
         $detail = PenjualanDetail::where('id_penjualan', $penjualan->id_penjualan)->get();

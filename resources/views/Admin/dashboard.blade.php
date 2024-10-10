@@ -1,6 +1,5 @@
 @extends('layouts.master') 
-<!-- digunakan untuk memanggil semua isi dari halaman yang ada di dalam kurungnya -->
-
+<!-- extends disini berfungsi bahwa halaman ini menunjukan halaman pewarisan dari halaman yang diextends yaitu,layouts.master,posisi di halaman ini diatur oleh yield di halaman yang diextends tersebut -->
 @section('title')
     Dashboard
 @endsection
@@ -10,6 +9,7 @@
     @parent
     <li class="active">Dashboard</li>
 @endsection
+<!-- parent disini berfungsi agar section breadcrumb sebelumnya,di halaman induk tidak terlewtkan,tetapi bisa ditambahkan dengan hal lain yang akan ditambahkan di section breadcrumb -->
     
 @section('content')
        <!-- Small boxes (Stat box) -->

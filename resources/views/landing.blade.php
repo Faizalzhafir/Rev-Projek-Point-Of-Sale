@@ -513,7 +513,7 @@
             <img src="{{ asset('images/ftBeranda.png') }}" alt="" width="400px" height="400px">
         </div>
     </section>
-    <!-- section berfungsi untuk mengatur bagian mana saja yang akan ditampilkan jika id yang terpilih diklik pada view,sebagai batas pemisah setiap href yang diklik -->
+    <!-- section berfungsi untuk mengatur bagian mana saja yang akan ditampilkan jika id yang terpilih diklik pada view,sebagai batas pemisah setiap href yang diklik,section juga berfungsi untuk mengelompokan bagian bagian konten pada suatu halaman,berdasarkan tema dan letak masing-masing-->
 
     <!-- Bagian Tentang -->
     <section class="tentang" id="tentang">
@@ -686,7 +686,7 @@
                                 height="20px">{{ $setting->email }}</p>
                     </a>
                 </div>
-                <!-- setiap kali kita membutuhkan data untuk ditampilkan di view dari data yang sudah dibuat,semisal dari database (yang sudah ada) kita dapat memanggilnya dengan memanggil variabel yang sudah di dfinisikan sebelumna di controller dan pastinya juga ada hubungannya dengan model  -->
+                <!-- setiap kali kita membutuhkan data untuk ditampilkan di view dari data yang sudah dibuat,semisal dari database (yang sudah ada) kita dapat memanggilnya dengan memanggil variabel yang sudah di dfinisikan sebelumnya di controller (dicompact) dan pastinya juga ada hubungannya dengan model  -->
             </div>
 
         </div>

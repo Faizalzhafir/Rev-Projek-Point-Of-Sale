@@ -96,16 +96,12 @@
             <td class="text-right">{{ format_uang($penjualan->total_harga) }}</td>
         </tr>
         <tr>
-            <td>Diskon Produk:</td>
-            <td class="text-right"></td>
-        </tr>
-        <tr>
             <td>Diskon Member:</td>
             <td class="text-right">{{ format_uang($penjualan->diskon) }}</td>
         </tr>
         <tr>
             <td>Total Diskon:</td>
-            <td class="text-right"></td>
+            <td class="text-right">{{ format_uang($penjualan->total_harga - $penjualan->bayar) }}</td>
         </tr>
         <tr>
             <td>Total Bayar :</td>

@@ -64,6 +64,6 @@ class Kernel extends HttpKernel
         'signed' => \App\Http\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
-        'level' => \App\Http\Middleware\CekLevel::class, //diambil dari varibael di file middleware
+        'level' => \App\Http\Middleware\CekLevel::class, //diambil dari varibael di file middleware/Cek Level
     ];
 }

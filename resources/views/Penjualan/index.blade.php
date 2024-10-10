@@ -23,7 +23,7 @@
                                 <th>Kode Member</th>
                                 <th>Total Item</th>
                                 <th>Total Harga</th>
-                                <th>Diskon</th>
+                                <th>Total Diskon</th>
                                 <th>Total Bayar</th>
                                 <th>Kasir</th>
                                 <th width="15%"><i class="fa fa-cog"></i></th>
@@ -57,7 +57,7 @@
                     {data: 'kode_member'},
                     {data: 'total_item'},
                     {data: 'total_harga'},
-                    {data: 'diskon'},
+                    {data: 'total_diskon'},
                     {data: 'bayar'},
                     {data: 'kasir'},
                     {data: 'action', searchable: false, sortable: false},

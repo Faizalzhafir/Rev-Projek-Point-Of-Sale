@@ -46,8 +46,8 @@ class PenjualanDetailController extends Controller
     $data = array();
     $total = 0;
     $total_item = 0;
-    $total_diskon_produk = 0;
-    $total_diskon_member = 0;
+    // $total_diskon_produk = 0;
+    // $total_diskon_member = 0;
 
     foreach ($detail as $item) {
         $row = array();
@@ -63,11 +63,11 @@ class PenjualanDetailController extends Controller
                                    </div>';
         $data[] = $row;
 
-        $total += $item->harga_jual * $item->jumlah;
-        // $total += $item->harga_jual * $item->jumlah - (($item->diskon * $item->jumlah) / 100 * $item->harga_jual);
+        // $total += $item->harga_jual * $item->jumlah;
+        $total += $item->harga_jual * $item->jumlah - (($item->diskon * $item->jumlah) / 100 * $item->harga_jual);
         $total_item += $item->jumlah;
-        $total_diskon_member += ($item->diskon * $item->jumlah) / 100 * $item->harga_jual; // menghitung total diskon dari semua item produk pada transaksi
-        $total_diskon_produk += ($item->produk->diskon * $item->jumlah) / 100 * $item->harga_jual;
+        // $total_diskon_member += ($item->diskon * $item->jumlah) / 100 * $item->harga_jual; // menghitung total diskon dari semua item produk pada transaksi
+        // $total_diskon_produk += ($item->produk->diskon * $item->jumlah) / 100 * $item->harga_jual;
     }
     
     // Pastikan untuk menghitung total_diskon_akhir di sini
@@ -127,17 +127,25 @@ class PenjualanDetailController extends Controller
         return response(null, 204);
     }
 
-    public function loadForm($diskon = 0, $total = 0, $diterima = 0) {
-        $total_diskon_member = $total * ($diskon / 100);
-        $total_diskon_produk = $total * ($diskon / 100);
-        $total_diskon = $total_diskon_member + $total_diskon_produk;
-        $bayar = $total - $total_diskon;
+    public function loadForm($diskon = 0, $total, $diterima) {
+        $id_penjualan = session('id_penjualan'); //Ambil ID Penjualan dari session
+        $detail = PenjualanDetail::where('id_penjualan', $id_penjualan)->get();
+
+        $totalDiskon = 0;
+
+        foreach ($detail as $item) {
+            //Hitung diskon per item
+            $diskonItem = ($item->diskon / 100) * $item->harga_jual * $item->jumlah;
+            $totalDiskon += $diskonItem; //Tambahkan ke total diskon
+        }
+
+        $diskonMember = $total * ($diskon / 100);
+        $diskonAll = $totalDiskon + $diskonMember;
+        $bayar = $total - ($diskon / 100 * $total);
         $kembali = ($diterima != 0) ? $diterima - $bayar : 0;
         $data = [
-            'total_diskon_member' => format_uang($total_diskon_member),
-            'total_diskon_produk' => format_uang($total_diskon_produk),
-            'total_diskon' => format_uang($total_diskon),
             'totalrp' => format_uang($total),
+            'diskonrp' => format_uang($diskonAll),
             'bayar' => $bayar,
             'bayarrp' => format_uang($bayar),
             'terbilang' => ucwords(terbilang($bayar). ' Rupiah'),

@@ -111,15 +111,9 @@
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <label for="diskon" class="col-lg-2 control-label">Diskon Produk</label>
+                                <label for="diskonrp" class="col-lg-2 control-label">Total Diskon</label>
                                 <div class="col-lg-8">
-                                    <input type="number" name="total_diskon_produk" id="total_diskon_produk" class="form-control" value="" readonly>
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label for="total_diskon" class="col-lg-2 control-label">Total Diskon</label>
-                                <div class="col-lg-8">
-                                    <input type="text" name="total_diskon" id="total_diskon" class="form-control"  readonly>
+                                    <input type="text" name="diskonrp" id="diskonrp" class="form-control"  readonly>
                                 </div>
                             </div>
                             <div class="form-group row">
@@ -307,7 +301,7 @@
             // Ambil nilai total dan uang diterima
             let totalBayar = parseFloat($('#bayar').val().replace(/[^0-9.-]+/g, ""));
             let uangDiterima = parseFloat($('#diterima').val().replace(/\./g, '').replace(',', '.'));
-            let totalDiskon = ($('#total_diskon').val());
+            let totalDiskon = ($('#diskonrp').val());
             // Debugging 
             console.log('Total Bayar:', totalBayar);
             console.log('Uang Diterima:', uangDiterima);
@@ -413,10 +407,8 @@
 
         $.get(`{{ url('/transaksi/loadform') }}/${diskon}/${$('.total').text()}/${diterima}`)
             .done(response => {
-                $('#total_diskon_member').val('Rp. ' + response.total_diskon_member);
-                $('#total_diskon_produk').val('Rp. ' + response.total_diskon_produk);
-                $('#total_diskon').val('Rp. ' + response.total_diskon);
-                console.log($('#total_diskon', '#total_diskon_member', 'total_diskon_produk').val());
+                $('#diskonrp').val('Rp. ' + response.diskonrp);
+                console.log($('#diskonrp').val());
                 $('#totalrp').val('Rp. ' + response.totalrp);
                 $('#bayarrp').val('Rp. ' + response.bayarrp);
                 $('#bayar').val(response.bayar);

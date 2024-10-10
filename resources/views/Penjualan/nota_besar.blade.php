@@ -9,10 +9,15 @@
         table td {
             font-size: 14px;
         }
-        table.data td,
-        table.data th {
+        table.data td {
             border: 1px solid #ccc;
             padding: 5px;
+        }
+        table.data th {
+            padding-top: 8px;
+            padding-bottom: 8px;
+            background-color: #008d4c;
+            color: white;
         }
         table.data (
             border-collapse: collapse;
@@ -26,25 +31,24 @@
     </style>
 </head>
 <body>
-    <h2 align="center"><b>Nota Penjualan {{ $setting->nama_perusahaan }} </b></h2 class="txt-center">
+   <h2 style="text-align: center; color: #008d4c; font-family: Helvetica;"><b>Nota Penjualan {{ $setting->nama_perusahaan }}</b></h2>
    <table width="100%">
-   <img src="{{ public_path($setting->path_logo) }}" alt="{{ $setting->path_logo }}" width="90">
-    <tr>
-        <td rowspan="4" width="60%">
-            {{ $setting->alamat }}
-            <br>
-            <br>
-        </td>
-    </tr>
-    
-    <tr>
-        <td>Tanggal</td>
-        <td>: {{ tanggal_indonesia(date('Y-m-d'), false) }}</td>
-    </tr>
-    <tr>
-        <td>Kode Member</td>
-        <td>: {{ $penjualan->member->kode_member ?? '' }}</td>
-    </tr>
+    <img src="{{ public_path($setting->path_logo) }}" alt="{{ $setting->path_logo }}" width="90">
+        <tr>
+            <td rowspan="4" width="60%">
+                {{ $setting->alamat }}
+                <br>
+                <br>
+            </td>
+        </tr>
+        <tr>
+            <td>Tanggal</td>
+            <td>: {{ tanggal_indonesia(date('Y-m-d'), false) }}</td>
+        </tr>
+        <tr>
+            <td>Kode Member</td>
+            <td>: {{ $penjualan->member->kode_member ?? '' }}</td>
+        </tr>
    </table>
 
    <table class="data" width="100%">
@@ -82,6 +86,10 @@
                     <td class="text-right"><b>{{ format_uang($penjualan->diskon) }}</b></td>
                 </tr>
                 <tr>
+                    <td colspan="6" class="text-right">Total Diskon</td>
+                    <td class="text-right"><b>{{ format_uang($penjualan->total_diskon)  }}</b></td>
+                </tr>
+                <tr>
                     <td colspan="6" class="text-right">Total Bayar</td>
                     <td class="text-right"><b>{{ format_uang($penjualan->bayar) }}</b></td>
                 </tr>
@@ -99,11 +107,12 @@
    <table width="100%">
         <tr>
             <td><b>Terimakasih telah berbelanja dan sampai jumpa</b><br><br></td>
-            <td class="text-center">
+            <td class="text-center"  style="background-color: #008d4c; color: white; font-family: Helvetica;"><b>
                 Kasir
                 <br>
                 <br>
                 {{ auth()->user()->name }}
+                </b>
             </td>
         </tr>
    </table>

@@ -23,4 +23,9 @@ class Penjualan extends Model
         return $this->hasOne(User::class, 'id', 'id_user');
     }
     //fungsi untuk membuat relasi dengan model user.agar nantinya data user dapat tampil di halaman penjualan,melalui model
+
+    public function produk() {
+        return $this->hasOne(Product::class, 'id_produk', 'id_produk');
+    }
+    //fungsi untuk membuat relasi dengan model produk,agar nantinya data produk dapat tampil di halaman penjualan,melalui model
 }
