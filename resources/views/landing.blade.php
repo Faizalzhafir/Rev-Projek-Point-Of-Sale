@@ -654,19 +654,19 @@
                 </div>
                 <div class="kasirr">
                     <h5 class="teks-kami">Ikuti Kami</h5>
-                    <a target="_blank" href="#">
+                    <a target="_blank" href="{{ $setting->instagram }}">
                         <p><img src="{{ asset('images/Instagram.png') }}" alt="" width="10px"
                                 height="10px">Instagram</p>
                     </a>
-                    <a target="_blank" href="#">
+                    <a target="_blank" href="{{ $setting->facebook }}">
                         <p><img src="{{ asset('images/facebook.png') }}" alt="" width="10px"
                                 height="10px">Facebook</p>
                     </a>
-                    <a target="_blank" href="#">
+                    <a target="_blank" href="{{ $setting->twitter }}">
                         <p><img src="{{ asset('images/x-log.png') }}" alt="" width="10px"
                                 height="10px">Twiter-x</p>
                     </a>
-                    <a target="_blank" href="#">
+                    <a target="_blank" href="{{ $setting->youtube }}">
                         <p><img src="{{ asset('images/youtube.png') }}" alt="" width="10px"
                                 height="10px">Youtube</p>
                     </a>

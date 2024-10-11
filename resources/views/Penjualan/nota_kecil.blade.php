@@ -101,7 +101,7 @@
         </tr>
         <tr>
             <td>Total Diskon:</td>
-            <td class="text-right">{{ format_uang($penjualan->total_harga - $penjualan->bayar) }}</td>
+            <td class="text-right">{{ format_uang($penjualan->total_diskon) }}</td>
         </tr>
         <tr>
             <td>Total Bayar :</td>

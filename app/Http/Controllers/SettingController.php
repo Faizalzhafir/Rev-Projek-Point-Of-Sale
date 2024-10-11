@@ -20,6 +20,10 @@ class SettingController extends Controller
         $setting->nama_perusahaan = $request->nama_perusahaan;
         $setting->telepon = $request->telepon;
         $setting->email = $request->email;
+        $setting->youtube = $request->youtube;
+        $setting->instagram = $request->instagram;
+        $setting->twitter = $request->twitter;
+        $setting->facebook = $request->facebook;
         $setting->alamat = $request->alamat;
         $setting->diskon = $request->diskon;
         $setting->tipe_nota = $request->tipe_nota;

@@ -34,7 +34,35 @@
                         <div class="form-group row">
                             <label for="email" class="col-lg-2 col-lg-offset-1 control-label">Email</label>
                             <div class="col-lg-6">
-                                <input type="email" name="email" class="form-control" id="email" required>
+                                <input type="text" name="email" class="form-control" id="email" required>
+                                <span class="help-block with-errors"></span>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="youtube" class="col-lg-2 col-lg-offset-1 control-label">Youtube</label>
+                            <div class="col-lg-6">
+                                <input type="text" name="youtube" class="form-control" id="youtube" required>
+                                <span class="help-block with-errors"></span>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="instagram" class="col-lg-2 col-lg-offset-1 control-label">Instagram</label>
+                            <div class="col-lg-6">
+                                <input type="text" name="instagram" class="form-control" id="instagram" required>
+                                <span class="help-block with-errors"></span>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="twitter" class="col-lg-2 col-lg-offset-1 control-label">Twitter</label>
+                            <div class="col-lg-6">
+                                <input type="text" name="twitter" class="form-control" id="twitter" required>
+                                <span class="help-block with-errors"></span>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="facebook" class="col-lg-2 col-lg-offset-1 control-label">Facebook</label>
+                            <div class="col-lg-6">
+                                <input type="text" name="facebook" class="form-control" id="facebook" required>
                                 <span class="help-block with-errors"></span>
                             </div>
                         </div>
@@ -131,6 +159,10 @@
                     $('[name=nama_perusahaan]').val(response.nama_perusahaan);
                     $('[name=telepon]').val(response.telepon);
                     $('[name=email]').val(response.email);
+                    $('[name=youtube]').val(response.youtube);
+                    $('[name=instagram]').val(response.instagram);
+                    $('[name=twitter]').val(response.twitter);
+                    $('[name=facebook]').val(response.facebook);
                     $('[name=alamat]').val(response.alamat);
                     $('[name=diskon]').val(response.diskon);
                     $('[name=tipe_nota]').val(response.tipe_nota);

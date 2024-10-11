@@ -106,6 +106,7 @@
             });
 
             //Fungsi untuk mengubah format dari nilai numerik agar sesuai dengan format uang,khusunya dengan menambahkan ('.') sebagai pemisah ribuan
+            //Fungsi tersebut menerima satu parameter bernama value,yang diharapkan dapat memiliki nilai string yang mengandung angka (string bisa saja angka,huruf,simbol) yang nantinya akan dihapus dalam format.Dengan fugsi akhir yaitu mengembalikan string yang hanya terdiri dari angka dan menamhkan titik sebaai pemisah ribuan
             function formatCurrency(value) {
                 return value
                     .replace(/\D/g, '') // Hanya angka,menggunakan metode replace dengan artian mengganti value dari parameter dengan mempertahankan angka saja (/D = (0-9)) yang diterapkan untuk seluruh string yang diinput (g),yang mana selain string yang diharapkan (angka) akan diganti ('')
@@ -114,7 +115,6 @@
                     //lalu mengelompokkan inputan dari parameter dengan mengelompokkannya menjadi kelompok 3 angka (dari kanan) (/d{3}), + berfungsi menyatakan bahwa akan ada lebih banyak kelompok 3 angka ( >999 )
                     //(?!\d) berfungsi untuk memastikan bahwa setelah string dikelompokkan tidak ada lagi angka (untuk menghindari pemisah ribuan di akhir string)
             };
-            //Fungsi tersebut menerima satu parameter bernama value,yang diharapkan dapat memiliki nilai string yang mengandung angka (string bisa saja angka,huruf,simbol) yang nantinya akan dihapus dalam format.Dengan fugsi akhir yaitu mengembalikan string yang hanya terdiri dari angka dan menamhkan titik sebaai pemisah ribuan
 
             // Event keyup untuk otomatis memformat saat mengetik,event ini akan otomatis dijalankan pada saat pengguna menekan dan melepas tombol keyboard (proses input),maka kode yang ada di blok ini akan dijalankan.Selector "on" akan dijalnakn pada elemen input yang memiliki nama (name yang dimaksud),untuk menjalankan event keyup
             $('#modal-form').on('keyup', '[name=harga_beli], [name=harga_jual]', function () {
@@ -123,11 +123,12 @@
             });
 
             // Event submit untuk memastikan titik dihapus sebelum data dikirim ke server,event yang diambil dari id modal-form,yang mana pada saat tombol submit di klik di form
+            //lalu memilih dua elemen input yang memiliki nama (name yang dimaksud),yang kemudian menggunakan fngsi each,yang mana setiap elemen tersebut akan diiterasi untuk diproses
             $('#modal-form').on('submit', function() {
                 $('[name=harga_beli], [name=harga_jual]').each(function() {
                     let value = $(this).val().replace(/\./g, ''); // Hapus titik sebelum submit,lalu nilai yang merujuk pada this,akan diambil oleh val (yang mana berupa string yang memformat string yang tadi diinputkan),lalu gunakan fungsi replace untuk mengganti seluruh titik yang ada pada string,sebelum dikirim ke server,semuanya,alu disimpan ke value
                     $(this).val(value); // Set nilai tanpa titik,lalu nilai input di set ulang dengan meuliskan kembali this yang merujuk pada inputan tadi,dengan mengambil nilai dengan val,dengan isian nilai value sebelumnya
-                }); //lalu memilih dua elemen input yang memiliki nama (name yang dimaksud),yang kemudian menggunakan fngsi each,yang mana setiap elemen tersebut akan diiterasi untuk diproses
+                }); 
             });
         });
 
