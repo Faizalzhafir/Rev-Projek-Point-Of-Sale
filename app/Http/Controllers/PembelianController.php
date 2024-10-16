@@ -17,7 +17,8 @@ class PembelianController extends Controller
     }
 
     public function data() {
-        $pembelian = Pembelian::orderBy('id_pembelian', 'desc')->get();
+        $pembelian = Pembelian::where('bayar', '>', '0')->orderBy('id_pembelian', 'desc')->get();
+         //untuk where,maka akan menampilkan bayar yang lebih dari 0,jika tidak,transaksi yang belum diinputkan,muncul di data,dan bernilai null,tetapi perlu dilihat kembali didatabase,apakah terhapus atau tidak,untuk field nya kosong
 
         return datatables()
             ->of($pembelian)
@@ -122,7 +123,13 @@ class PembelianController extends Controller
     public function destroy($id) {
         $pembelian = Pembelian::find($id); 
         $detail = PembelianDetail::where('id_pembelian', $pembelian->id_pembelian)->get();
+        //Perulangan yang digunakan apabila jumlah produk di data daftar pembelian dihapus,kembali menjadi jumlah awal
         foreach ($detail as $item) {
+            $product = Product::find($item->id_produk);
+            if ($product) {
+                $product->stok -= $item->jumlah;
+                $product->update();
+            }
             $item->delete();
         } //pembelian pada detail pembelian
 

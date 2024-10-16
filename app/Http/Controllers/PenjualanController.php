@@ -17,7 +17,7 @@ class PenjualanController extends Controller
 
     public function data() {
         $penjualan = Penjualan::with('member')->where('bayar', '>', '0')->orderBy('id_penjualan', 'desc')->get();
-        //untuk where,maka akan menampilkan bayar yang lebih dari 0,jika tidak,transaksi yang belum diinputkan,muncul di data,dan bernilai null
+        //untuk where,maka akan menampilkan bayar yang lebih dari 0,jika tidak,transaksi yang belum diinputkan,muncul di data,dan bernilai null,tetapi perlu dilihat kembali didatabase,apakah terhapus atau tidak,untuk field nya kosong
 
 
         return datatables()
@@ -87,32 +87,38 @@ class PenjualanController extends Controller
         $penjualan->total_harga = $request->total;
         $penjualan->diskon = $request->diskon;
         $penjualan->bayar = $request->bayar;
-        $penjualan->diterima = str_replace('.','',$request->diterima);
-
-        //Menentukan total diskon
-        $detail = PenjualanDetail::with('produk')->where('id_penjualan', $penjualan->id_penjualan)->get(); //Pengambilan diskon produk
+        $penjualan->diterima = str_replace('.', '', $request->diterima);
+    
+        // Menentukan total diskon
+        $detail = PenjualanDetail::with('produk')->where('id_penjualan', $penjualan->id_penjualan)->get();
         $totalDiskon = 0;
         $total = 0;
-
-        //Pengambilan nilai diskon dari member
-        $diskon = Setting::first()->diskon ?? 0;
-
+    
         foreach ($detail as $item) {
-            //Hitung diskon per item
+            // Hitung diskon per item
             $diskonItem = ($item->diskon / 100) * $item->harga_jual * $item->jumlah;
-            $totalDiskon += $diskonItem; //Tambahkan ke total diskon
-
+            $totalDiskon += $diskonItem;
+    
             $total += $item->harga_jual * $item->jumlah - (($item->diskon * $item->jumlah) / 100 * $item->harga_jual);
         }
-
-        $diskonMember = $total * ($diskon / 100);
-        $diskonAll = $totalDiskon + $diskonMember;
-
-        $penjualan->total_diskon = $diskonAll; //Kode untuk mengisi kolom di database untuk total diskon
-
+    
+        // Periksa apakah ada member yang diinput
+        if ($penjualan->id_member) {
+            // Ambil diskon member dari pengaturan
+            $diskonMember = Setting::first()->diskon ?? 0;
+            $diskonMember = $total * ($diskonMember / 100); // Hitung diskon member
+        } else {
+            // Jika tidak ada member, diskon member 0
+            $diskonMember = 0;
+        }
+    
+        $totalDiskon += $diskonMember; //Panggil diskonMember untuk ditambahkan ke variabel totalDiskon
+    
+        $penjualan->total_diskon = $totalDiskon; // Update kolom total diskon
         $penjualan->update();
     
-        $detail = PenjualanDetail::where('id_penjualan', $penjualan->id_penjualan)->get();
+        // Update stok produk setelah transaksi
+        $detail = PenjualanDetail::where('id_penjualan', $penjualan->id_penjualan)->get();  
         foreach ($detail as $item) {
             $product = Product::find($item->id_produk);
             $product->stok -= $item->jumlah;
@@ -121,6 +127,7 @@ class PenjualanController extends Controller
     
         return redirect()->route('transaksi.selesai');
     }
+    
     
 
     public function show($id) {
@@ -151,7 +158,14 @@ class PenjualanController extends Controller
     public function destroy($id) {
         $penjualan = Penjualan::find($id); 
         $detail = PenjualanDetail::where('id_penjualan', $penjualan->id_penjualan)->get();
+        //Perulangan yang digunakan untuk pengembalian stok produk,jika di daftar penjualan dihapus
         foreach ($detail as $item) {
+            $product = Product::find($item->id_produk);
+            if ($product) {
+                $product->stok += $item->jumlah;
+                $product->update();
+            }
+
             $item->delete();
         } //penjualan pada detail penjualan
 

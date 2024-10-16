@@ -66,12 +66,7 @@ class PenjualanDetailController extends Controller
         // $total += $item->harga_jual * $item->jumlah;
         $total += $item->harga_jual * $item->jumlah - (($item->diskon * $item->jumlah) / 100 * $item->harga_jual);
         $total_item += $item->jumlah;
-        // $total_diskon_member += ($item->diskon * $item->jumlah) / 100 * $item->harga_jual; // menghitung total diskon dari semua item produk pada transaksi
-        // $total_diskon_produk += ($item->produk->diskon * $item->jumlah) / 100 * $item->harga_jual;
     }
-    
-    // Pastikan untuk menghitung total_diskon_akhir di sini
-    // $total_diskon_akhir = $total_diskon_produk + ($memberSelected->diskon ?? 0);
 
     $data[] = [
         'kode_produk' => '
@@ -140,12 +135,12 @@ class PenjualanDetailController extends Controller
         }
 
         $diskonMember = $total * ($diskon / 100);
-        $diskonAll = $totalDiskon + $diskonMember;
+       $totalDiskon += $diskonMember;
         $bayar = $total - ($diskon / 100 * $total);
         $kembali = ($diterima != 0) ? $diterima - $bayar : 0;
         $data = [
             'totalrp' => format_uang($total),
-            'diskonrp' => format_uang($diskonAll),
+            'diskonrp' => format_uang($totalDiskon),
             'bayar' => $bayar,
             'bayarrp' => format_uang($bayar),
             'terbilang' => ucwords(terbilang($bayar). ' Rupiah'),
@@ -172,4 +167,5 @@ class PenjualanDetailController extends Controller
             'message' => 'Stok tersedia!',
         ]);
     }
+    //disini jumlah merupakan parameter yang dideklarasikan sebelumnya di halaman index penjualan detail,menggunakan ajax request
 }

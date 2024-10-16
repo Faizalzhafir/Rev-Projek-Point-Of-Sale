@@ -189,8 +189,26 @@ $(function() {
     // Boolean - Whether to show a dot for each point
     pointDot                : false,
     // Boolean - whether to make the chart responsive to window resizing
-    responsive              : true
-    };
+    responsive              : true,
+    scaleLabel: function(label) {
+      return 'Rp ' + label.value.toString().replace(/\B(?=(\d{3})+(?!\d))/g,"."); // Format Rupiah
+    },
+    //Mengatur konfigurai untuk mengubah format menjadi format rupiah
+    scales: {
+      yAxes: [{
+        ticks: {
+          beginAtZero: true,
+          //Ini memastikan bahwa sumbu Y dimulai dari angka nol, sehingga semua nilai positif akan terlihat jelas.
+          userCallback: function(value) {
+            value = value.toString(); //memanggil parameter value dan mengubahnya menjadi type string
+            value = value.replace(/\B(?=(\d{3})+(?!\d))/g, "."); // Menambahkan titik sebagai pemisah ribuan,mengambil parameter value,untuk diganti (string) dengan menambahkan titik,berada pada diantara angka (B),dan string yang diambil,dikelompokkn menjadi 3 angka
+            //dan akan lebih dari ratusan,dan memastikan bahwa titik tidak digunakan di akhir string,dan penggantian ini diterapkan di seluruh string yang akan diformat
+            return 'Rp ' + value; // Menambahkan "Rp" di depan nilai
+          } // Memastikan bahwa sumbu Y dimulai dari nilai 0, meskipun nilai terkecil dalam data grafik lebih besar dari 0.
+        } // Bagian ini berisi pengaturan untuk ticks (nilai yang ditampilkan di sepanjang sumbu Y).
+      }] //Ini menunjukkan bahwa pengaturan dilakukan pada sumbu Y (y-axis) dalam bentuk array. Array ini berisi objek yang menentukan pengaturan untuk sumbu Y.
+    } // bagian konfigurasi untuk mengatur skala pada sumbu di grafik Chart.js (baik sumbu X maupun Y)
+  };
 
   // Create the line chart
   salesChart.Line(salesChartData, salesChartOptions);
