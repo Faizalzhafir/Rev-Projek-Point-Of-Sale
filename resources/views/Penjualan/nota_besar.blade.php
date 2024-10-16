@@ -77,9 +77,21 @@
                 @endforeach
             </tbody>
             <tfoot>
+                <!-- dikarenakan dihalaman ini tidak menggunakan php,maka minta laravel untuk memanggil php,untuk pendeklarasian variabel untuk menimpan nilai total harga (hanya untuk di tampilan nota,tdak dimasukan ke database) -->
+                @php
+                    $total = 0;
+                @endphp
+                
+                <!-- perulangan untuk mengambil item dari produk,untuk pengakumulasian total harga  -->
+                @foreach ($detail as $item)
+                    @php
+                        $total += $item->jumlah * $item->harga_jual
+                    @endphp
+                    <!-- panggil variabel yang sudah dideklarasikan,untuk nantinya disimpan sebagai total harga -->
+                @endforeach
                 <tr>
                     <td colspan="6" class="text-right">Total Harga</td>
-                    <td class="text-right"><b>{{ format_uang($penjualan->total_harga) }}</b></td>
+                    <td class="text-right"><b>{{ format_uang($total) }}</b></td>
                 </tr>
                 <tr>
                     <td colspan="6" class="text-right">Diskon</td>

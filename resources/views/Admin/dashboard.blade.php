@@ -9,7 +9,7 @@
     @parent
     <li class="active">Dashboard</li>
 @endsection
-<!-- parent disini berfungsi agar section breadcrumb sebelumnya,di halaman induk tidak terlewtkan,tetapi bisa ditambahkan dengan hal lain yang akan ditambahkan di section breadcrumb -->
+<!-- parent disini berfungsi agar section breadcrumb sebelumnya,di halaman induk tidak terlewatkan,tetapi bisa ditambahkan dengan hal lain yang akan ditambahkan di section breadcrumb -->
     
 @section('content')
        <!-- Small boxes (Stat box) -->
@@ -109,25 +109,25 @@
         <div class="col-lg-12">
           <div class="box">
             <div class="box-body table-responsive">
-                          <form action="" method="post" class="form-produk">
-                              @csrf
-                              <table class="table table-striped table-bordered">
-                                  <thead>
-                                    <h3 style="text-align: center; font-weight: bold;">Informasi Produk</h3>
-                                    <br>
-                                      <tr>
-                                          <th width="5%">No</th>
-                                          <th>Kode</th>
-                                          <th>Nama</th>
-                                          <th>Kategori</th>
-                                          <th>Merk</th>
-                                          <th>Stok</th>
-                                          <th>Keterangan</th>
-                                      </tr>
-                                  </thead>
-                              </table>
-                          </form>
-                      </div>
+              <form action="" method="post" class="form-produk">
+                @csrf
+                  <table class="table table-striped table-bordered">
+                    <thead>
+                        <h3 style="text-align: center; font-weight: bold;">Informasi Produk</h3>
+                        <br>
+                        <tr>
+                          <th width="5%">No</th>
+                          <th>Kode</th>
+                          <th>Nama</th>
+                          <th>Kategori</th>
+                          <th>Merk</th>
+                          <th>Stok</th>
+                          <th>Keterangan</th>
+                        </tr>
+                    </thead>
+                  </table>
+              </form>
+            </div>
           </div>
         </div>
       </div>
