@@ -214,15 +214,43 @@
 
                 loadForm($(this).val());
             });
-
+            
+            //Validasi sebelum kasir/admin mengklik untuk menyimpan transaksi yang sedang dilaksanakan
             $('.btn-simpan').on('click', function () {
-                $('.form-pembelian').submit();
+                
+                //kondisi untuk mengecek apakah pada saat menginput transaksi nilai dar kode produk dan jumlah terisi
+                //jquery akan memanggil kode_produk dan jumlah lalu ambil nilainya (val),apabila salah satu atau keduanya true (||), karena sama dengan (=== strict equal) '' (null),maka kondisi tersebut bernilai true
+                if ($('#kode_produk').val() === '' || $('#total_item').val() === '') {
                     Swal.fire({
-                        icon: "success",
-                        title: "Transaksi berhasil disimpan!",
-                        showConfirmButton: false,
-                        timer: 1500
+                        icon: 'error',
+                        title: 'Produk Belum Dipilih',
+                        text: 'Silakan tambahkan produk ke dalam transaksi sebelum menyimpan',
+                        confirmButtonText: 'OK'
                     });
+                    return; //Hentikan proses simpan jika produk atau jumlah tidak ada
+                }
+
+                Swal.fire({
+                    title: 'Konfirmasi',
+                    text: 'Apakah Anda yakin ingin menyimpan transaksi ini?',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Ya, simpan!',
+                    cancelButtonText: 'Tidak, batalkan'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $('.form-pembelian').submit();
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Transaksi berhasil disimpan',
+                            timer: 1500,
+                            showConfirmButton: false
+                        });
+                        return;
+                    }
+                    //kondisi jika kasir/admin mengklik tombol simpan,maka kondisi akan dijalankan (result.isConfirmed),jquery akan memanggil class form pejualan untuk menjalankan fungsi submit
+                });
+
             });
 
         $(document).on('input', '#diskon', function () {
@@ -232,10 +260,6 @@
 
             loadForm($(this).val());
         });
-
-        $('.btn-simpan').on('click', function () {
-            $('.form-pembelian').submit();
-        })
     });
 
     function tampilProduk() {

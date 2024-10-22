@@ -22,7 +22,7 @@ class ProductController extends Controller
     public function data() {
         $product = Product::leftJoin('kategori', 'kategori.id_kategori', 'produk.id_kategori')
             ->select('produk.*', 'nama_kategori')
-            ->orderBy('id_produk', 'desc')
+            ->orderBy('stok', 'asc')
             ->get();
 
         return datatables()
@@ -53,10 +53,12 @@ class ProductController extends Controller
             ->addColumn('keterangan', function ($product) {
                 if ($product->stok < 1) {
                     return '<span class="label label-danger">'. 'STOK HABIS' .'</span>';
-                } elseif ($product->stok < 21) {
-                    return '<span class="label label-warning">'. 'STOK KURANG' .'</span>';
-                } elseif ($product->stok > 20 ) {
-                    return '<span class="label label-primary">'. 'STOK CUKUP' .'</span>';
+                } elseif ($product->stok < 20) {
+                    return '<span class="label label-warning">'. 'STOK MENIPIS' .'</span>';
+                } elseif ($product->stok < 50 ) {
+                    return '<span class="label label-success">'. 'STOK CUKUP' .'</span>';
+                } else {
+                    return  '<span class="label label-primary">'. 'STOK BANYAK' .'</span>';
                 } //jika variabel produk bagian stok kurang dari 1,maka tampilkan codenya
                 return '';  //Jika stok masih ada, sebaiknya mengembalikan nilai yang jelas (misalnya, string kosong).
             }) //fungsi untuk membuat keterangan stok habis, keterangan merupakan nama column dan nantinya ditampilkan di data,lalu fungsi produk menerima dari variabel produk,yang nantinya dapat menentukan data apa yang akan dimanipulasi dan dipakai

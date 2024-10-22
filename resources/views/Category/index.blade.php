@@ -34,6 +34,10 @@
         </div>
     </div>
     @includeIf('Category.form')
+    <!-- includeIf digunakan untuk menyertakan view yang dipanggil,jika view yang dipanggil tidak ada,maka laravel tidak mengembalikan pesan error -->
+    <!-- berbeda dengan include,laravel akan mengembalikan pesan error jika view yang dipanggil tidak ada -->
+    <!-- includewhen digunakan untuk menyertakan sebuah view tergantung kondisi boolean,jika bernilai true maka tampilkan view includeWhen($user->isAdmin(), 'kiko.page') -->
+    <!-- sementara includeUnless(is->Admin(), 'kiko.page') akan disertakan (ditampilkan) kecuali kondisi mengembalikan true -->
 @endsection
 
 @push('scripts')

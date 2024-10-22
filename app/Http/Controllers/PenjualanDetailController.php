@@ -89,21 +89,45 @@ class PenjualanDetailController extends Controller
 }
     
     public function store(Request $request) {
-        $product = Product::where('id_produk', $request->id_produk)->first();
-
+        $product = Product::where('kode_produk', $request->kode_produk)->first();
+        //kondisi untuk mengecek produk,jika variabel product bernilai false,maka kondisi bernilai true,karena menggunakan logika not
         if (! $product) {
             return response()->json('Data gagal disimpan', 404);
         }
+        //kondisi jika stok yang ada diproduk kurang dari jumlah maka kondisi dijalankan
+        if ($product->stok < $request->jumlah) {
+            return response()->json(['message' => 'Stok produk tidak mencukupi!'], 400); 
+        }
+        $penjualanId = $request->id_penjualan ?? session('id_penjualan'); //variabel diambil dari dari fitur request dan sessio,dan menggunakan logika null coalescing operator,untuk mengeek apakah nilai disebelah kiri ada (tidak null),jika tidak maka akan menggunakan nilai yang disebelah kanan
+        //Session adalah mekanisme penyimpanan data sementara di server, yang memungkinkan aplikasi web untuk melacak informasi pengguna dari satu permintaan ke permintaan lainnya.Jadi bisa dibilang sebagai tempat penyimpanan dari sisi server,jika suatu aksi telah dilakuan (penyimpanan session),maka fungsi tersebut akan melacakinformasi pengguna antar permintaan 
+        //kondisi untuk mengecek nilai ID jika variabel penjualan Id bernilai false,maka kondisi bernilai true,karena menggunakana logika not
+        if (!$penjualanId) {
+         return response()->json(['message' => 'ID Penjualan tidak ditemukan'], 400);
+        }
 
-        $detail = new PenjualanDetail();
-        $detail->id_penjualan = $request->id_penjualan;
-        $detail->id_produk = $product->id_produk;
-        $detail->harga_jual = $product->harga_jual;
-        $detail->jumlah = 1; 
-        $detail->diskon = $product->diskon; //mengambil data diskon yang ada di produk,dari variabel detail
-        $detail->subtotal = ($product->harga_jual * $detail->jumlah) - (($product->diskon / 100) * ($product->harga_jual * $detail->jumlah)) ; //mengambil subtotal hasil operasi harga jual dikurangi diskon yang dibagi 100,dikalikan dengan harga jualnya,ditambah dengan perhitungan dari setiap produknya
-        $detail->save();
-
+        // Cek apakah produk sudah ada dalam detail penjualan
+        $detail = PenjualanDetail::where('id_penjualan', $penjualanId)
+                    ->where('id_produk', $product->id_produk)
+                    ->first();
+    
+        if ($detail) {
+            // Jika produk sudah ada, perbarui jumlah dan subtotal
+            $detail->jumlah += 1;
+            $detail->subtotal = ($detail->harga_jual - ($detail->harga_jual * $detail->diskon / 100)) * $detail->jumlah;
+            $detail->save();
+        } else {
+            // Jika produk belum ada, buat detail baru
+            
+            $detail = new PenjualanDetail();
+            $detail->id_penjualan = $request->id_penjualan;
+            $detail->id_produk = $product->id_produk;
+            $detail->harga_jual = $product->harga_jual;
+            $detail->jumlah = 1; 
+            $detail->diskon = $product->diskon; //mengambil data diskon yang ada di produk,dari variabel detail
+            $detail->subtotal = ($product->harga_jual * $detail->jumlah) - (($product->diskon / 100) * ($product->harga_jual * $detail->jumlah)) ; //mengambil subtotal hasil operasi harga jual dikurangi diskon yang dibagi 100,dikalikan dengan harga jualnya,ditambah dengan perhitungan dari setiap produknya
+            $detail->save();
+            
+        }
         return response()->json( 'Data berhasil disimpan', 200);
     }
 
@@ -123,19 +147,19 @@ class PenjualanDetailController extends Controller
     }
 
     public function loadForm($diskon = 0, $total, $diterima) {
-        $id_penjualan = session('id_penjualan'); //Ambil ID Penjualan dari session
-        $detail = PenjualanDetail::where('id_penjualan', $id_penjualan)->get();
+        $id_penjualan = session('id_penjualan'); // Ambil ID penjualan dari session
+        $detailPenjualan = PenjualanDetail::where('id_penjualan', $id_penjualan)->get();
 
         $totalDiskon = 0;
 
-        foreach ($detail as $item) {
+        foreach ($detailPenjualan as $item) {
             //Hitung diskon per item
             $diskonItem = ($item->diskon / 100) * $item->harga_jual * $item->jumlah;
             $totalDiskon += $diskonItem; //Tambahkan ke total diskon
         }
 
         $diskonMember = $total * ($diskon / 100);
-       $totalDiskon += $diskonMember;
+        $totalDiskon += $diskonMember;
         $bayar = $total - ($diskon / 100 * $total);
         $kembali = ($diterima != 0) ? $diterima - $bayar : 0;
         $data = [

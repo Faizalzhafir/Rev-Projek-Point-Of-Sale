@@ -10,6 +10,7 @@
     @parent
     <li class="active">Dashboard</li>
 @endsection
+<!-- parent disini berfungsi agar section breadcrumb sebelumnya,di halaman induk tidak terlewatkan,tetapi bisa ditambahkan dengan hal lain yang akan ditambahkan di section breadcrumb -->
     
 @section('content')
        <!-- Small boxes (Stat box) -->
@@ -56,4 +57,31 @@
 @endsection
 <!-- sehingga pada saat pemanggilan sudah dinamis,sudah mengambil adri kelas turunannya,bukan dari kelas parent(induk) nya -->
 
-@stack('scripts')
+@push('scripts')
+<script>
+    let table;
+
+    $(function () {
+        table = $('.table').DataTable({
+            responsive: true,
+            processing: true,
+            serverSide: true,
+            autoWidth: false,
+            ajax: {
+                url: '{{ route('product.data') }}',
+            },
+            columns: [
+                {data: 'DT_RowIndex', searchable: false, orderable: false},
+                {data: 'kode_produk'},
+                {data: 'nama_produk'},
+                {data: 'nama_kategori'},
+                {data: 'merk'},
+                {data: 'stok'},
+                {data: 'keterangan'},
+            ]
+        });
+
+    })
+</script>
+@endpush
+<!-- push digunakan untuk menambahkan konten ke dalam stack,agar nantinya dapat digunakan di berbagai halaman -->

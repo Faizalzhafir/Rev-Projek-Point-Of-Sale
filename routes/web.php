@@ -74,6 +74,8 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/penjualan/data', [PenjualanController::class, 'data'])->name('penjualan.data');
         Route::get('/penjualan', [PenjualanController::class, 'index'])->name('penjualan.index');
         Route::get('/penjualan/{id}', [PenjualanController::class, 'show'])->name('penjualan.show');
+        Route::get('/penjualan/{id}', [PenjualanController::class, 'edit'])->name('penjualan.edit');
+        Route::put('/penjualan/{id}', [PenjualanController::class, 'update'])->name('penjualan.update');
         Route::delete('/penjualan/{id}', [PenjualanController::class, 'destroy'])->name('penjualan.destroy');
     }); //route yang berfungsi agar mengelompokan route-route (halaman) yang akan ditampilkan ,dimana berhubungan dengan file di  middleware dan kernel
 

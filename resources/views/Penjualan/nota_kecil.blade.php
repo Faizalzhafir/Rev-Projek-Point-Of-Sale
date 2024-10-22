@@ -90,7 +90,8 @@
             @endif
         @endforeach
     </table>
-    <p class="text-center">====================================</p>
+    <!-- <p class="text-center">====================================</p> -->
+    <p class="text-center">------------------------------------</p>
 
     <table width="100%" style="border: 0;">
         <tr>

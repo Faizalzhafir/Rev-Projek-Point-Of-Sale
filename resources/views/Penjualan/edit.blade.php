@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @section('title')
-    Transaksi Penjualan
+    Edit Transaksi Penjualan
 @endsection
 
 @push('css')
@@ -48,15 +48,10 @@
                         <label for="kode_produk" class="col-lg-2">Kode Produk</label>
                         <div class="col-lg-5">
                             <div class="input-group">
-                            <input type="hidden" name="id_penjualan" id="id_penjualan" value="{{ $id_penjualan }}">
-                                <!-- HIDDEN: Input ini berfungsi untuk menyimpan id_penjualan, yang merupakan ID unik untuk transaksi penjualan saat ini. -->
-                                <!-- HIDDEN adalah elemen input yang tidak ditampilkan di halaman antarmuka,tetepi akan akan dikirimkan saat formulir dikirim (submit),ini berfungsi ketika perlu untuk menyimpan data ke server,tanpa perlu memerlukan interaksi dari pengguna -->
-                                <!-- {{ $id_penjualan }} akan diganti dengan nilai dari variabel $id_penjualan di PenjulanDetailController -->
-                                <!-- Menetapkan nilai elemen input, yaitu nilai variabel {{ $id_penjualan }} yang berasal dari back-end (biasanya dalam framework seperti Laravel). Saat formulir dimuat, {{ $id_penjualan }} akan diganti dengan ID penjualan yang aktual dari sisi server, misalnya 12345. Ini adalah nilai yang akan dikirimkan ke server saat formulir dikirim -->
-                                <!-- Ketika halaman dimuat, nilai dari variabel back-end $id_penjualan disisipkan ke dalam elemen input tersembunyi (hidden) -->
+                                <input type="hidden" name="id_penjualan" id="id_penjualan" value="{{ $penjualan->id_penjualan }}">
                                 <input type="hidden" name="id_produk" id="id_produk">
                                 <input type="text" class="form-control" name="kode_produk" id="kode_produk">
-                                <span class="input-group-btn">
+                                 <span class="input-group-btn">
                                     <button onclick="tampilProduk()" class="btn btn-info btn-flat" type="button"><i class="fa fa-arrow-right"></i></button>
                                 </span>
                             </div>
@@ -86,7 +81,7 @@
                     <div class="col-lg-4">
                         <form action="{{ route('transaksi.simpan') }}" class="form-penjualan" method="post">
                             @csrf
-                            <input type="hidden" name="id_penjualan" value="{{ $id_penjualan }}">
+                            <input type="hidden" name="id_penjualan" value="{{ $penjualan->id_penjualan }}">
                             <input type="hidden" name="total" id="total">
                             <input type="hidden" name="total_item" id="total_item">
                             <input type="hidden" name="bayar" id="bayar">
@@ -152,7 +147,7 @@
     </div>
 </div>
 
-@includeIf('Penjualan_detail.produk')
+@includeIf('Penjualan.produk')
 @includeIf('Penjualan_detail.member')
 @endsection
 
@@ -171,7 +166,11 @@
             serverSide: true,
             autoWidth: false,
             ajax: {
-                url: '{{ route('transaksi.data', $id_penjualan) }}',
+                url: '{{ route('transaksi.data', $penjualan->id_penjualan) }}',
+                method: 'GET', // Sesuaikan dengan metode yang Anda butuhkan
+                success: function(response) {
+                    console.log('Request AJAX berhasil:', response);
+                },
             },
             columns: [
                 {data: 'DT_RowIndex', searchable: false, sortable: false},
@@ -212,56 +211,6 @@
             }
         });
     }
-
-    //Fungsi untuk memungkinkan penggua untuk menambahkan produk secara otomatis (seperti tekan ctrl+v enter) menggunakan alat scan barcode (untuk barcode harus yang sudah diinputkan di data produk sebelumnya)
-    $('#kode_produk').on('keypress', function (e) {
-        //jquery memanggil id (kode_produk) untuk fokus di field mana fungsi ini dijalankan,dengan memakai selektor "on",maka akan menjalankan fungsi keypress (event pada saat pengguna menekan karakter,tidak berlaku untuk non-karakter (shift+ctrl+alt.dll.)),lalu akan menjalanakan fungsi callback
-        //parameter e,mewakili event yang ditangkap yang berisi informasi tombol yang ditekan dan event lainnya
-        if (e.which == 13) {  // Kode 13 adalah kode untuk tombol Enter,e.which adalah cara untuk mengetahui tombol mana yang telah ditekan,disini menggunakan operaor perbandingan equal (==),13 mengacu pada kode ASCII untuk tombol Enter,maka ini berarti jika tombol yang diinputkan adalah (sama dengan) 13,maka kode akan dijalankan
-
-            e.preventDefault(); //fungsi ini digunakan untuk mencegah aksi 'default',pada saat pengguna menginputkan karakter,setelah menekan enter
-            let kodeProduk = $(this).val().trim(); // Ambil nilai kode produk dari input,jquery akan mengarah ke input atau elemen yang sedang diberikan event (this),lalu mengambil nilai dari input tersebut (val),dan menghapus spasi di awal dan diakhir string (trim),lalu dimasukkan ke variabel kodeProduk,let memiliki arti bahwa variabel ini hanya bisa diakses di blok kode dimana ia dideklarasikan
-
-            //Buat kondisi jika variabel kodeProduk tidak sama dengan (strict not equal) dengan string kososng (bernilai null),maka jalankan blok kode nya
-            if (kodeProduk !== '') {
-                // Kirimkan request AJAX ke server untuk menambah produk berdasarkan kode,jquery meminta request AJAX (asynchronous javascript and xml) untuk mengirim data ke server dan menerima respomse tanpa memuat ulang halaman
-                $.ajax({i
-                    url: '{{ route('transaksi.store') }}', // Sesuaikan dengan route yang benar,karena nantinya ajax akan mengirimkan data ke server berdasarkan route yang telah didefinisikan,yang mana nantinya akan mengelola penyimpanan data dibagian Backend
-                    type: 'POST', //tentukan metode HTTP mana yang akan menjadi metode untuk requestan ini,yaitu POST (Post biasaya digunakan untuk mengubah sesuatu di server (mengirimkan data ke database))
-                    data: {
-                        kode_produk: kodeProduk, //mengirimkan data berupa kode_produk ,yang diambil dari input,yang disimpan di variabel kodeProduk sebelumnya
-                        id_penjualan: '{{ session('id_penjualan') }}', // Kirim ID Penjualan,yang diambil dari session id_penjualan yang akan disertakan dalam request,dimana ini digunakan untuk menghubunkan produk denan transaksi yang sedang berlangsung 
-                        _token: '{{ csrf_token() }}' //keamanan dari Laravel (Cross-Site Request Forgery prevention),untuk memastikan bahwa request berasal dari sumber yang sah dan tidak dimanipulasi.
-                    }, //data akan berisikan objek (data) yang akan dikirmkan ke server (payload dari request POST)
-                    success: function (response) {
-                        // Reset input setelah produk ditambahkan,jquery langsung mengambil id dari elemen mana fugsi ini akan dijalankan,dan mengambil nilainya untuk dijadikan '' (string kosong)
-                        $('#kode_produk').val('');
-                        // Lakukan sesuatu, misalnya refresh data tabel penjualan
-                        // Refresh data tabel dengan memanggil ulang fungsi loadTable() jika ada
-                        setTimeout(() => {
-                            table.ajax.reload();
-                        }, 200); //fungsi untuk menyetel waktu selama 200 milidetik,dan memanggil fungsi untuk merefresh halaman setelah pengiriman request tadi,agar data yang sebelumnya diinputkanmuncul,tanpa harus merefresh seluruh halaman
-                    }, //properti yang digunakan untuk mendefinisikan fungsi callback,jika request Ajax yang sebelumnya berhasil (respons dari server sukses),dengan menjalankan fungsi dengan menerima parameter response,yang menyimpan data atau pesan yang dikirim kembali oleh server
-                    error: function (xhr) {
-                        Swal.fire({
-                            icon: "warning",
-                            title: "Produk tidak ditemukan!",
-                            showConfirmButton: false,
-                            timer: 1500
-                        });
-
-                    // Kosongkan input setelah SweetAlert ditampilkan
-                    $('#kode_produk').val('');
-                    } //properti yang digunakan untuk mendifinisikan fungsi callback,jika request Ajax yang sebelumnya gagal (respon dari server tidak berhasil),lalau akan menjalankan fungsi dengan menerima parameter xhr (XMLHttpRequest),yang berisi informasi mengenai pesan error,statuts HTTP,dan detail lain dengan request yang gagal
-                    //Objek xhr berisi informasi lebih lanjut tentang error yang bisa digunakan untuk logging atau debugging lebih lanjut, meskipun dalam kasus ini objek xhr tidak dimanfaatkan lebih jauh.
-                });
-            }
-            //Interaktivitas : Menggunakan AJAX membuat interaksi lebih responsif tanpa perlu me-refresh halaman 
-            //Validasi Input : Memastikan bahwa input tidak kosong sebelum mengirim data ke server 
-            //Pesan Kesalahan yang jelas : Memberukan umpan balik penggua jika produk tidak ditemukan
-        }
-    });
-
         //Event untuk menangani pada saat proses input pada kelas quantity,dan pada saat proses tersebut berlangsung,maka function akan dijalankan
         $(document).on('input', '.quantity', function () {
             //event input akan dipantau pada saat pengguna sedang mlakukan proses input,pada saat proses berlangsung event input akan dipacu untuk mealkukan fungsi callback yang didefinisikan di dalam blok
@@ -355,14 +304,14 @@
 
             //Dikarenakan isstokValid merupakan boolean,maka jika bernilai false (stok kurang atau 0),maka kondisi ini akan bernilai true (penggunaan not !) dan memunculkan notifikasi alertnya
             if (!isStokValid) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Stok Tidak Cukup!',
-                    text: 'Tidak dapat menyimpan transaksi karena stok habis atau tidak mencukupi.',
-                    confirmButtonText: 'OK'
-                });
-                return; // Hentikan proses simpan jika stok tidak cukup,sehingga tidak akan ada transaksi apapun
-            }
+            Swal.fire({
+                icon: 'error',
+                title: 'Stok Tidak Cukup!',
+                text: 'Tidak dapat menyimpan transaksi karena stok habis atau tidak mencukupi.',
+                confirmButtonText: 'OK'
+            });
+            return; // Hentikan proses simpan jika stok tidak cukup,sehingga tidak akan ada transaksi apapun
+        }
 
             // Ambil nilai total dan uang diterima
             let totalBayar = parseFloat($('#bayar').val().replace(/[^0-9.-]+/g, "")); //jquery akan mencari id bayar,lalu diambil nilainya (val),dan digantikan (replace) semua nilai yang diambil tersebut dengan menghapus bukan angka,titik dan minus ([^0-9.-),lalu terapkan fungsi replace ini secara global (g) seluruh inputan pada string (""),dan megubahnya menjadi angka desimal (parseFloat), lalu ditambahkan ke variabel totalBayar
@@ -372,18 +321,6 @@
             console.log('Total Bayar:', totalBayar); //console.log merupakan fungsi bawaan JS untuk mencetak output ke console,dan menampilkan nilai dari variabel totalBayar,dengan menampilkan string sebelumnya (Total Bayar: )
             console.log('Uang Diterima:', uangDiterima);
             console.log('Total Diskon: ', totalDiskon);
-
-            //kondisi untuk mengecek apakah pada saat menginput transaksi nilai dar kode produk dan jumlah terisi
-            //jquery akan memanggil kode_produk dan jumlah lalu ambil nilainya (val),apabila salah satu atau keduanya true (||), karena sama dengan (=== strict equal) '' (null),maka kondisi tersebut bernilai true
-            if ($('#bayar').val() === '' || $('#total_item').val() === '') {
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Produk Belum Dipilih',
-                    text: 'Silakan tambahkan produk ke dalam transaksi sebelum menyimpan',
-                    confirmButtonText: 'OK'
-                });
-                return; //Hentikan proses simpan jika produk atau jumlah tidak ada
-            }
 
             //kondisi untuk mengecek apakah variabel bukan suatu angka,isNaN merupakan fungsi bawaan javascript isNaN(Not A Number),jika nilai variabel bukan angka maka fungsi ini (isNaN) akan bernilai true, || (operasi or) digunakan untuk operasi logika jika salh satu atau keduanya bernilai true maka hasilnya,akan bernilai true (kode akan dijalankan)
             if (isNaN(uangDiterima) || isNaN(totalBayar)) {
@@ -419,13 +356,6 @@
             }).then((result) => {
                 if (result.isConfirmed) {
                     $('.form-penjualan').submit();
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Transaksi berhasil disimpan',
-                        timer: 1500,
-                        showConfirmButton: false
-                    });
-                    return;
                 }
                 //kondisi jika kasir/admin mengklik tombol simpan,maka kondisi akan dijalankan (result.isConfirmed),jquery akan memanggil class form pejualan untuk menjalankan fungsi submit
             });
@@ -451,8 +381,7 @@
         $.post('{{ route('transaksi.store') }}', $('.form-produk').serialize())
             .done(response => {
                 $('#kode_produk').focus();
-                // table.ajax.reload(() => loadForm($('#diskon').val()));
-                table.ajax.reload(null, false)
+                table.ajax.reload(() => loadForm($('#diskon').val()));
             })
             .fail(errors => {
                 alert('Tidak dapat menyimpan data');

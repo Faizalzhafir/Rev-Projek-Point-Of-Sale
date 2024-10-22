@@ -20,6 +20,7 @@
                             <tr>
                                 <th width="5%">No</th>
                                 <th>Tanggal</th>
+                                <th>No Transaksi</th>
                                 <th>Kode Member</th>
                                 <th>Total Item</th>
                                 <th>Total Harga</th>
@@ -54,6 +55,7 @@
                 columns: [
                     {data: 'DT_RowIndex', searchable: false, sortable: false},
                     {data: 'tanggal'},
+                    {data: 'no_transaksi'},
                     {data: 'kode_member'},
                     {data: 'total_item'},
                     {data: 'total_harga'},

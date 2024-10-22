@@ -23,6 +23,9 @@ class PenjualanController extends Controller
         return datatables()
             ->of($penjualan)
             ->addIndexColumn()
+            ->addColumn('no_transaksi', function ($penjualan) {
+                return str_pad($penjualan->id_penjualan, 10, '0', STR_PAD_LEFT);
+            })
             ->addColumn('total_item', function ($penjualan) {
                 return format_uang($penjualan->total_item);
             })
@@ -50,6 +53,7 @@ class PenjualanController extends Controller
                 return '
                 <div class="btn-group">                
                     <button onclick="showDetail(`'. route('penjualan.show', $penjualan->id_penjualan) .'`)" class="btn btn-xs btn-info btn-flat"><i class="fa fa-eye"></i></button>
+                    <button onclick="window.location.href=\''. route('penjualan.edit', $penjualan->id_penjualan) . '\'" class="btn btn-xs btn-warning btn-flat"><i class="fa fa-pencil"></i></button>
                     <button onclick="deleteForm(`'. route('penjualan.destroy', $penjualan->id_penjualan) .'`)" class="btn btn-xs btn-danger btn-flat"><i class="fa fa-trash"></i></button>
                 </div>                
                 ';
@@ -155,6 +159,54 @@ class PenjualanController extends Controller
         ->make(true);
     }
 
+    public function edit($id) {
+        // Logika untuk mengambil data penjualan berdasarkan ID
+        $penjualan = Penjualan::findOrFail($id);
+        $detail = PenjualanDetail::where('id_penjualan', $penjualan->id_penjualan)->get();
+        $product = Product::all();
+
+        return view('Penjualan.edit', compact('penjualan', 'detail', 'product'));
+    }
+
+    public function update(Request $request, $id) {
+        $penjualan = Penjualan::findOrFail($id);
+        $penjualan->total_item = $request->total_item;
+        $penjualan->total_harga = $request->total;
+        $penjualan->bayar = $request->bayar;
+        $penjualan->diterima = str_replace(',','.', $request->diterima);
+
+        // Menentukan total diskon
+        $detail = PenjualanDetail::with('produk')->where('id_penjualan', $penjualan->id_penjualan)->get();
+        $totalDiskon = 0;
+        $total = 0;
+    
+        foreach ($detail as $item) {
+            // Hitung diskon per item
+            $diskonItem = ($item->diskon / 100) * $item->harga_jual * $item->jumlah;
+            $totalDiskon += $diskonItem;
+    
+            $total += $item->harga_jual * $item->jumlah - (($item->diskon * $item->jumlah) / 100 * $item->harga_jual);
+        }
+    
+        // Periksa apakah ada member yang diinput
+        if ($penjualan->id_member) {
+            // Ambil diskon member dari pengaturan
+            $diskonMember = Setting::first()->diskon ?? 0;
+            $diskonMember = $total * ($diskonMember / 100); // Hitung diskon member
+        } else {
+            // Jika tidak ada member, diskon member 0
+            $diskonMember = 0;
+        }
+    
+        $totalDiskon += $diskonMember; //Panggil diskonMember untuk ditambahkan ke variabel totalDiskon
+    
+        $penjualan->total_diskon = $totalDiskon; // Update kolom total diskon
+        $penjualan->update();
+
+        return redirect()->route('penjualan.index')->with('success', 'Transaksi berhasil disimpan');
+        
+    }
+
     public function destroy($id) {
         $penjualan = Penjualan::find($id); 
         $detail = PenjualanDetail::where('id_penjualan', $penjualan->id_penjualan)->get();
@@ -207,4 +259,5 @@ class PenjualanController extends Controller
         $pdf->setPaper(0,0,609,460, 'potrait'); //mengatur set ukuran kertas yang ditampilkan
         return $pdf->stream('Transaksi' . date('Y-m-d-his') .'.pdf'); //mengatur nama kertas,pada saat diunduh
     }
+    
 }

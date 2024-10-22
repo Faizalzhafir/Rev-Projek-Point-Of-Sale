@@ -51,6 +51,7 @@
           <li><a href="{{ route('dashboard') }}"><i class="fa fa-dashboard"></i> Home</a></li>
           @show
         </ol>
+        <!-- show digunakan sebagai tag penutup untuk section yang telah dideklarasikan sebelumnya,berbeda dengan endsection yang dimana hanya pendeklarasian section nya saja,karena harus ditampilkan di halaman lain (jika ingin digunakan) dengan yield -->
     </section>
 
     <!-- Main content -->
@@ -90,6 +91,9 @@
   }
 </script>
 @stack('scripts')
-<!-- otomatis laravel akan membaca ketika ada view push dari js,nanti otomatis akan disimpan di stack diatas -->
+<!-- otomatis laravel akan membaca ketika ada view push dari js,nanti otomatis akan disimpan di stack diatas,stack berisi berbagai kumpulan konten (yang dinamis) yang telah didefinisikan di push sebelumnya-->
 </body>
 </html>
+
+<!-- section dan yield: Digunakan untuk menentukan bagian-bagian konten tetap yang akan diisi di child template.
+stack dan push: Lebih cocok untuk menambahkan konten (seperti file JavaScript, CSS) dari berbagai template tanpa menentukan posisi dari awal. -->
