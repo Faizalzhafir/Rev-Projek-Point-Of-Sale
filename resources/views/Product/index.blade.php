@@ -167,41 +167,43 @@
                 })
         }
 
-        async function deleteForm(url) {
-            const result = await Swal.fire({
-                title: "Yakin ingin menghapus data?",
-                text: "Data yang dihapus tidak akan kembali!",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#d33",
-                cancelButtonColor: "#3085d6",
-                confirmButtonText: "Hapus",
-                cancelButtonText: "Batal"
-            });
-
+       function deleteForm(url) {
+        Swal.fire({
+            title: 'Yakin ingin menghapus?',
+            text: "Data yang dihapus tidak dapat dikembalikan!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Ya, Hapus!',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
             if (result.isConfirmed) {
                 $.post(url, {
-                    '_token': $('[name=csrf-token]').attr('content'),
-                    '_method': 'delete'
-                })
-                .done((response) => {
-                    table.ajax.reload();
-                    Swal.fire({
-                        icon: "success",
-                        title: "Data berhasil dihapus",
-                        showConfirmButton: false,
-                        timer: 1500
+                        '_token': $('[name=csrf-token]').attr('content'),
+                        '_method': 'delete'
+                    })
+                    .done((response) => {
+                       
+                        table.ajax.reload();
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil!',
+                            text: 'Produk berhasil dihapus',
+                            confirmButtonText: 'OK'
+                        });
+                    })
+                    .fail((errors) => {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Perhatian!",
+                            text: 'Produk tidak dapat dihapus karena sudah digunakan di penjualan dan pembelian'
+                        });
                     });
-                })
-                .fail((errors) => {
-                    Swal.fire({
-                        icon: "error",
-                        title: "Perhatian!",
-                        text: "Tidak dapat menghapus data!",
-                    });
-                });
             }
-        }
+        });
+    }
+
 
         async function deleteSelected(url) {
             const checkedInputs = $('input:checked');

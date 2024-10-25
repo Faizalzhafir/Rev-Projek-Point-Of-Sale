@@ -13,6 +13,7 @@ class LoginController extends Controller
         return view('auth.login', compact('setting')); // Kirim variabel $setting ke view
     }
 
+    //Method yang berfungsi untuk mengecek apakah ada pembaharuan gambar di setting,karena di Login terdapat logo perusahaan di bagian header
     public function update(Request $request)
     {
         // Ambil setting yang akan diupdate

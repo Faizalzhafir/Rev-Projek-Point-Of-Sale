@@ -31,6 +31,12 @@ class SupplierController extends Controller
 
     public function store(Request $request)
     {
+        
+        
+        $request->validate([
+            'telepon' => 'required|unique:supplier,telepon', // Validasi telepon unik tanpa format tertentu
+        ]); 
+        
         $supplier = Supplier::create($request->all());
 
         return response()->json('Data berhasil disimpan', 200);
@@ -70,11 +76,28 @@ class SupplierController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
-    {
-        $supplier = Supplier::find($id);
-        $supplier->delete();
+    // public function destroy(string $id)
+    // {
+    //     $supplier = Supplier::find($id);
+    //     $supplier->delete();
 
-        return response(null, 204);
+    //     return response(null, 204);
+    // }
+
+    public function delete($id)
+    {
+        try {
+            $supplier = Supplier::findOrFail($id);
+
+             // Kondisi untuk mengecek apakah supplier sudah digunakan di pembelian
+        if ($supplier->pembelian()->exists()) {
+            return response()->json(['message' => 'Supplier tidak dapat dihapus karena sudah digunakan di pembelian'], 400);
+        }
+
+            $supplier->delete();
+            return response()->json(['message' => 'Data berhasil dihapus'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Tidak dapat menghapus data'], 500);
+        }
     }
 }

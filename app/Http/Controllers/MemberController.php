@@ -105,7 +105,14 @@ class MemberController extends Controller
      */
     public function destroy(string $id)
     {
-        $member = Member::find($id);
+        
+        $member = Member::findOrFail($id);
+
+        //Kondisi untuk mengecek member,apakah sudah digunakan di Penjualan atau tidak
+        if ($member->penjualan()->exists()) {
+            return response->json(['message' => 'Member tidak dihapus,karena sudah digunakan di Daftar Penjualan']);
+        }
+        
         $member->delete();
 
         return response(null, 204);

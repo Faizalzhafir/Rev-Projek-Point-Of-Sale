@@ -83,11 +83,11 @@
         });
 
         function showDetail(url) {
-            $('#modal-detail').modal('show');
+        $('#modal-detail').modal('show');
 
-            table1.ajax.url(url);
-            table1.ajax.reload();
-        }
+        table1.ajax.url(url);
+        table1.ajax.reload();
+    }
 
         async function deleteForm(url) {
             const result = await Swal.fire({

@@ -23,8 +23,15 @@ class PenjualanController extends Controller
         return datatables()
             ->of($penjualan)
             ->addIndexColumn()
+            ->addColumn('tanggal', function ($penjualan) {
+                return tanggal_indonesia($penjualan->created_at, false);
+            })
             ->addColumn('no_transaksi', function ($penjualan) {
                 return str_pad($penjualan->id_penjualan, 10, '0', STR_PAD_LEFT);
+            })
+            ->addColumn('kode_member', function ($penjualan) {
+                $member = $penjualan->member->kode_member ?? '';
+                return '<span class="label label-success">'. $member .'</span>';
             })
             ->addColumn('total_item', function ($penjualan) {
                 return format_uang($penjualan->total_item);
@@ -32,18 +39,11 @@ class PenjualanController extends Controller
             ->addColumn('total_harga', function ($penjualan) {
                 return 'Rp. ' . format_uang($penjualan->total_harga);
             })
-            ->addColumn('bayar', function ($penjualan) {
-                return 'Rp. ' . format_uang($penjualan->bayar);
-            })
-            ->addColumn('tanggal', function ($penjualan) {
-                return tanggal_indonesia($penjualan->created_at, false);
-            })
-            ->addColumn('kode_member', function ($penjualan) {
-                $member = $penjualan->member->kode_member ?? '';
-                return '<span class="label label-success">'. $member .'</span>';
-            })
             ->editColumn('total_diskon', function ($penjualan) {
                 return 'Rp. ' . format_uang($penjualan->total_diskon);
+            })
+            ->addColumn('bayar', function ($penjualan) {
+                return 'Rp. ' . format_uang($penjualan->bayar);
             })
             ->editColumn('kasir', function ($penjualan) {
                 return $penjualan->user->name ?? '';
@@ -53,7 +53,6 @@ class PenjualanController extends Controller
                 return '
                 <div class="btn-group">                
                     <button onclick="showDetail(`'. route('penjualan.show', $penjualan->id_penjualan) .'`)" class="btn btn-xs btn-info btn-flat"><i class="fa fa-eye"></i></button>
-                    <button onclick="window.location.href=\''. route('penjualan.edit', $penjualan->id_penjualan) . '\'" class="btn btn-xs btn-warning btn-flat"><i class="fa fa-pencil"></i></button>
                     <button onclick="deleteForm(`'. route('penjualan.destroy', $penjualan->id_penjualan) .'`)" class="btn btn-xs btn-danger btn-flat"><i class="fa fa-trash"></i></button>
                 </div>                
                 ';
@@ -133,79 +132,79 @@ class PenjualanController extends Controller
     }
     
     
-
-    public function show($id) {
+    public function show($id)
+    {
         $detail = PenjualanDetail::with('produk')->where('id_penjualan', $id)->get();
 
         return datatables()
-        ->of($detail)
-        ->addIndexColumn()
-        ->addColumn('kode_produk', function ($detail) {
-            return '<span class="label label-success">'. $detail->produk->kode_produk .'</span>';
-        })
-        ->addColumn('nama_produk', function ($detail) {
-            return  $detail->produk->nama_produk;
-        })
-        ->addColumn('harga_jual', function ($detail) {
-            return 'Rp. ' . format_uang($detail->harga_jual);
-        })
-        ->addColumn('jumlah', function ($detail) {
-            return  format_uang($detail->jumlah);
-        })
-        ->addColumn('subtotal', function ($detail) {
-            return 'Rp. ' . format_uang($detail->subtotal);
-        })
-        ->rawColumns(['kode_produk'])
-        ->make(true);
+            ->of($detail)
+            ->addIndexColumn()
+            ->addColumn('kode_produk', function ($detail) {
+                return '<span class="label label-success">'. $detail->produk->kode_produk .'</span>';
+            })
+            ->addColumn('nama_produk', function ($detail) {
+                return $detail->produk->nama_produk;
+            })
+            ->addColumn('harga_jual', function ($detail) {
+                return 'Rp. '. format_uang($detail->harga_jual);
+            })
+            ->addColumn('jumlah', function ($detail) {
+                return format_uang($detail->jumlah);
+            })
+            ->addColumn('subtotal', function ($detail) {
+                return 'Rp. '. format_uang($detail->subtotal);
+            })
+            ->rawColumns(['kode_produk'])
+            ->make(true);
     }
 
-    public function edit($id) {
-        // Logika untuk mengambil data penjualan berdasarkan ID
-        $penjualan = Penjualan::findOrFail($id);
-        $detail = PenjualanDetail::where('id_penjualan', $penjualan->id_penjualan)->get();
-        $product = Product::all();
+    // public function edit($id) {
+    //     // Logika untuk mengambil data penjualan berdasarkan ID
+    //     $penjualan = Penjualan::findOrFail($id);
+    //     $detail = PenjualanDetail::where('id_penjualan', $penjualan->id_penjualan)->get();
+    //     $product = Product::all();
 
-        return view('Penjualan.edit', compact('penjualan', 'detail', 'product'));
-    }
+    //     return view('Penjualan.edit', compact('penjualan', 'detail', 'product'));
+    // }
 
-    public function update(Request $request, $id) {
-        $penjualan = Penjualan::findOrFail($id);
-        $penjualan->total_item = $request->total_item;
-        $penjualan->total_harga = $request->total;
-        $penjualan->bayar = $request->bayar;
-        $penjualan->diterima = str_replace(',','.', $request->diterima);
+    // public function update(Request $request, $id) {
+    //     $penjualan = Penjualan::findOrFail($id);
+    //     $penjualan->total_item = $request->total_item;
+    //     $penjualan->total_harga = $request->total;
+    //     $penjualan->bayar = $request->bayar;
+    //     $penjualan->diterima = str_replace(',','.', $request->diterima);
 
-        // Menentukan total diskon
-        $detail = PenjualanDetail::with('produk')->where('id_penjualan', $penjualan->id_penjualan)->get();
-        $totalDiskon = 0;
-        $total = 0;
+    //     // Menentukan total diskon
+    //     $detail = PenjualanDetail::with('produk')->where('id_penjualan', $penjualan->id_penjualan)->get();
+    //     $totalDiskon = 0;
+    //     $total = 0;
     
-        foreach ($detail as $item) {
-            // Hitung diskon per item
-            $diskonItem = ($item->diskon / 100) * $item->harga_jual * $item->jumlah;
-            $totalDiskon += $diskonItem;
+    //     foreach ($detail as $item) {
+    //         // Hitung diskon per item
+    //         $diskonItem = ($item->diskon / 100) * $item->harga_jual * $item->jumlah;
+    //         $totalDiskon += $diskonItem;
     
-            $total += $item->harga_jual * $item->jumlah - (($item->diskon * $item->jumlah) / 100 * $item->harga_jual);
-        }
+    //         $total += $item->harga_jual * $item->jumlah - (($item->diskon * $item->jumlah) / 100 * $item->harga_jual);
+    //     }
     
-        // Periksa apakah ada member yang diinput
-        if ($penjualan->id_member) {
-            // Ambil diskon member dari pengaturan
-            $diskonMember = Setting::first()->diskon ?? 0;
-            $diskonMember = $total * ($diskonMember / 100); // Hitung diskon member
-        } else {
-            // Jika tidak ada member, diskon member 0
-            $diskonMember = 0;
-        }
+    //     // Periksa apakah ada member yang diinput
+    //     if ($penjualan->id_member) {
+    //         // Ambil diskon member dari pengaturan
+    //         $diskonMember = Setting::first()->diskon ?? 0;
+    //         $diskonMember = $total * ($diskonMember / 100); // Hitung diskon member
+    //     } else {
+    //         // Jika tidak ada member, diskon member 0
+    //         $diskonMember = 0;
+    //     }
     
-        $totalDiskon += $diskonMember; //Panggil diskonMember untuk ditambahkan ke variabel totalDiskon
+    //     $totalDiskon += $diskonMember; //Panggil diskonMember untuk ditambahkan ke variabel totalDiskon
     
-        $penjualan->total_diskon = $totalDiskon; // Update kolom total diskon
-        $penjualan->update();
+    //     $penjualan->total_diskon = $totalDiskon; // Update kolom total diskon
+    //     $penjualan->update();
 
-        return redirect()->route('penjualan.index')->with('success', 'Transaksi berhasil disimpan');
+    //     return redirect()->route('penjualan.index')->with('success', 'Transaksi berhasil disimpan');
         
-    }
+    // }
 
     public function destroy($id) {
         $penjualan = Penjualan::find($id); 

@@ -306,7 +306,6 @@
             AOS.init();
         </script>
     </body>
-
     </html>
 @endsection
 

@@ -86,7 +86,7 @@
 
         function addForm(url) {
             $('#modal-form').modal('show');
-            $('#modal-form .modal-title').text('Add Product');
+            $('#modal-form .modal-title').text('Tambah Kategori');
 
             $('#modal-form form')[0].reset();
             $('#modal-form form').attr('action', url);
@@ -97,7 +97,7 @@
 
         function editForm(url) {
             $('#modal-form').modal('show');
-            $('#modal-form .modal-title').text('Edit Category');
+            $('#modal-form .modal-title').text('Edit Kategori');
 
             $('#modal-form form')[0].reset();
             $('#modal-form form').attr('action', url);

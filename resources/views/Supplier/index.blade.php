@@ -73,7 +73,13 @@
                         });
                     })
                     .fail((errors) => {
-                        alert('Tidak dapat menyimpan data');
+                        table.ajax.reload();
+                        Swal.fire({
+                        icon: "error",
+                        title: "Gagal",
+                        text: "Tidak bisa menambahkan,telepon sudah ada di daftar!",
+                        confirmButtonText: 'OK'
+                        });
                         return;
                     });
                 }
@@ -83,12 +89,13 @@
 
         function addForm(url) {
             $('#modal-form').modal('show');
-            $('#modal-form .modal-title').text('Add Supplier');
+            $('#modal-form .modal-title').text('Tambah Supplier');
 
             $('#modal-form form')[0].reset();
             $('#modal-form form').attr('action', url);
             $('#modal-form [name=_method]').val('post');
             $('#modal-form [name=nama]').focus();
+            
         }
 
         function editForm(url) {
@@ -113,40 +120,78 @@
                 })
         }
 
-        async function deleteForm(url) {
-            const result = await Swal.fire({
-                title: "Yakin ingin menghapus data?",
-                text: "Data yang dihapus tidak akan kembali!",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#d33",
-                cancelButtonColor: "#3085d6",
-                confirmButtonText: "Hapus",
-                cancelButtonText: "Batal"
-            });
+        // async function deleteForm(url) {
+        //     const result = await Swal.fire({
+        //         title: "Yakin ingin menghapus data?",
+        //         text: "Data yang dihapus tidak akan kembali!",
+        //         icon: "warning",
+        //         showCancelButton: true,
+        //         confirmButtonColor: "#d33",
+        //         cancelButtonColor: "#3085d6",
+        //         confirmButtonText: "Hapus",
+        //         cancelButtonText: "Batal"
+        //     });
 
+        //     if (result.isConfirmed) {
+        //         $.post(url, {
+        //             '_token': $('[name=csrf-token]').attr('content'),
+        //             '_method': 'delete'
+        //         })
+        //         .done((response) => {
+        //             table.ajax.reload();
+        //             Swal.fire({
+        //                 icon: "success",
+        //                 title: "Data berhasil dihapus",
+        //                 showConfirmButton: false,
+        //                 timer: 1500
+        //             });
+        //         })
+        //         .fail((errors) => {
+        //             Swal.fire({
+        //                 icon: "error",
+        //                 title: "Perhatian!",
+        //                 text: "Tidak dapat menghapus data!",
+        //             });
+        //         });
+        //     }
+        // }
+
+        function deleteForm(url) {
+        Swal.fire({
+            title: 'Yakin ingin menghapus?',
+            text: "Data yang dihapus tidak dapat dikembalikan!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Ya, Hapus!',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
             if (result.isConfirmed) {
                 $.post(url, {
-                    '_token': $('[name=csrf-token]').attr('content'),
-                    '_method': 'delete'
-                })
-                .done((response) => {
-                    table.ajax.reload();
-                    Swal.fire({
-                        icon: "success",
-                        title: "Data berhasil dihapus",
-                        showConfirmButton: false,
-                        timer: 1500
+                        '_token': $('[name=csrf-token]').attr('content'),
+                        '_method': 'delete'
+                    })
+                    .done((response) => {
+                       
+                        table.ajax.reload();
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil!',
+                            text: 'Supplier berhasil dihapus',
+                            confirmButtonText: 'OK'
+                        });
+                    })
+                    .fail((errors) => {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Gagal',
+                            text: 'Tidak dapat menghapus Supplier karena Supplier sedang digunakan!',
+                            confirmButtonText: 'OK'
+                        });
                     });
-                })
-                .fail((errors) => {
-                    Swal.fire({
-                        icon: "error",
-                        title: "Perhatian!",
-                        text: "Tidak dapat menghapus data!",
-                    });
-                });
             }
-        }
+        });
+    }
     </script>
 @endpush

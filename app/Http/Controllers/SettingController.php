@@ -28,6 +28,7 @@ class SettingController extends Controller
         $setting->diskon = $request->diskon;
         $setting->tipe_nota = $request->tipe_nota;
 
+        //Kondisi untuk mengecek jika ada logo yang diupload/uodate
         if ($request->hasFile('path_logo')) {
             $file = $request->file('path_logo');
             $nama = 'logo-' .date('YmdHis') . '.' . $file->getClientOriginalExtension();
@@ -36,6 +37,7 @@ class SettingController extends Controller
             $setting->path_logo = "/img/$nama";
         }
 
+        //Kondisi untuk mengecek jika ada kartu member yang diupload/update
         if ($request->hasFile('path_kartu_member')) {
             $file = $request->file('path_kartu_member');
             $nama = 'member-' .date('Y-m-dHis') . '.' . $file->getClientOriginalExtension();
@@ -48,4 +50,6 @@ class SettingController extends Controller
 
         return response()->json('Data berhasil disimpan', 200);
     }
+
+    //Kenapa untuk setting tidak ada method untuk store?karena,untuk setting menggunakan seeder,sehingga hanya perlu untuk metho updatenya saja
 }

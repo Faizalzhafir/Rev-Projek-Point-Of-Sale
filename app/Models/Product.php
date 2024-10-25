@@ -12,4 +12,16 @@ class Product extends Model
     protected $table = 'produk';
     protected $primaryKey = 'id_produk';
     protected $guarded = [];
+
+    public function pembeliandetail()
+    {
+        return $this->hasMany(PembelianDetail::class, 'id_produk');
+    }
+    //fungsi untuk membuat relasi dengan model PembelianDetail,jika produk sudah digunakan atau tidak
+
+    public function penjualandetail()
+    {
+        return $this->hasMany(PenjualanDetail::class, 'id_produk');
+    }
+    //fungsi untuk membuat relasi dengan model PenjualanDetail,jika produk sudah digunakan atau tidak
 }

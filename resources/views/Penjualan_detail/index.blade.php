@@ -225,7 +225,7 @@
             //Buat kondisi jika variabel kodeProduk tidak sama dengan (strict not equal) dengan string kososng (bernilai null),maka jalankan blok kode nya
             if (kodeProduk !== '') {
                 // Kirimkan request AJAX ke server untuk menambah produk berdasarkan kode,jquery meminta request AJAX (asynchronous javascript and xml) untuk mengirim data ke server dan menerima respomse tanpa memuat ulang halaman
-                $.ajax({i
+                $.ajax({
                     url: '{{ route('transaksi.store') }}', // Sesuaikan dengan route yang benar,karena nantinya ajax akan mengirimkan data ke server berdasarkan route yang telah didefinisikan,yang mana nantinya akan mengelola penyimpanan data dibagian Backend
                     type: 'POST', //tentukan metode HTTP mana yang akan menjadi metode untuk requestan ini,yaitu POST (Post biasaya digunakan untuk mengubah sesuatu di server (mengirimkan data ke database))
                     data: {

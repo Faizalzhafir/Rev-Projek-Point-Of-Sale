@@ -149,16 +149,21 @@ class ProductController extends Controller
      */
     public function destroy($id)
     {
-        $product = Product::find($id);
+        // $product = Product::find($id);
 
-        if (!$product) {
-            return response()->json(['error' => 'Product not found'], 404);
+        $product = Product::findOrFail($id);
+
+        //Kondisi untuk mengecek apakah produk sudah digunakan di penjualan dan pembelian
+        //variabel terhubung dengan metode yang ada pada Model,dengan membuat method untuk merelasikan dengan objek yang ingin dicek
+        if ($product->penjualandetail()->exists() || $product->pembeliandetail()->exists()) {
+            return response()->json(['message' => 'Produk tidak dapat dihapus karena sudah digunakan di penjualan dan pembelian'], 400);
         }
 
+        // Jika tidak digunakan di penjualan, maka dapat melanjutkan penghapusan
         $product->delete();
-
-        return response(null, 204);
+        return response()->json(['message' => 'Produk berhasil dihapus'], 200);
     }
+
 
     public function deleteSelected(Request $request)
     {
@@ -168,11 +173,15 @@ class ProductController extends Controller
             if (!$product) {
                 return response()->json(['error' => 'Product not found'], 404);
             }
-            
+
+            if ($product->pembelian()->exists() || $product->penjualan()->exists()) {
+                return response()->json(['message' => 'Produk tidak dapat dihapus karena sudah digunakan di pembelian atau penjualan'], 400);
+            }
+
             $product->delete();
         }
 
-        return response(null, 204);
+        return response()->json('Data berhasil dihapus', 200);
     }
 
     public function cetakBarcode(Request $request) 

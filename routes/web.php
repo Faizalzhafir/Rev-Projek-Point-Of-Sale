@@ -56,6 +56,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::resource('/member', MemberController::class );
     
         Route::get('/supplier/data', [SupplierController::class, 'data'])->name('supplier.data');
+        Route::delete('supplier/{id}', [SupplierController::class, 'delete'])->name('supplier.delete');
         Route::resource('/supplier', SupplierController::class );
     
         Route::get('/pengeluaran/data', [PengeluaranController::class, 'data'])->name('pengeluaran.data');
@@ -73,8 +74,8 @@ Route::group(['middleware' => 'auth'], function () {
     
         Route::get('/penjualan/data', [PenjualanController::class, 'data'])->name('penjualan.data');
         Route::get('/penjualan', [PenjualanController::class, 'index'])->name('penjualan.index');
-        Route::get('/penjualan/{id}', [PenjualanController::class, 'show'])->name('penjualan.show');
-        Route::get('/penjualan/{id}', [PenjualanController::class, 'edit'])->name('penjualan.edit');
+        Route::get('/penjualan/{id}/show', [PenjualanController::class, 'show'])->name('penjualan.show');
+        // Route::get('/penjualan/{id}/edit', [PenjualanController::class, 'edit'])->name('penjualan.edit');
         Route::put('/penjualan/{id}', [PenjualanController::class, 'update'])->name('penjualan.update');
         Route::delete('/penjualan/{id}', [PenjualanController::class, 'destroy'])->name('penjualan.destroy');
     }); //route yang berfungsi agar mengelompokan route-route (halaman) yang akan ditampilkan ,dimana berhubungan dengan file di  middleware dan kernel
