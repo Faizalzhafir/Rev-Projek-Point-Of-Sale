@@ -24,5 +24,5 @@ class CekLevel
         return redirect()->route('dashboard');
     }
     //membuat middleware untuk akses sistem berdasarkn level,dengan nama middleware CekLevel
-    //$level (nama vairabel) ditambahkan di Kernel.php,dn nantinya dipanggil di route mddleware
+    //$level (nama vairabel) ditambahkan di Kernel.php,dn nantinya dipanggil di route middleware
 }

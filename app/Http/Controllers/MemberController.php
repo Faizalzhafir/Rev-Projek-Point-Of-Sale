@@ -60,6 +60,10 @@ class MemberController extends Controller
         $kode_member = (int) $member->kode_member +1 ?? 1; //jika kode_member null,maka kode mmeber akan memanggil fungsi tambah nol didepan
         //apabila kita menemukan nullattempt to read property,itu karena pada saat pengisian memeberikan nilai null,sehingga menghasilkan error untuk mengatasinya tambahkan ?? new Model; agar langsung dpat diterima oleh sistem dan membuat data baru
 
+        $request->validate([
+            'telepon' => 'required|unique:member,telepon', // Validasi telepon unik tanpa format tertentu
+        ]);
+
         $member = new Member();
         $member->kode_member = tambah_nol_didepan($kode_member, 5); //00001
         $member->nama = $request->nama;

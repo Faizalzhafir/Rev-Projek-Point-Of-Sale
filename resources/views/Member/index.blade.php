@@ -77,13 +77,19 @@
                         table.ajax.reload();
                         Swal.fire({
                         icon: "success",
-                        title: "Member berhasil disimpan!",
+                        title: "Suppplier berhasil disimpan!",
                         showConfirmButton: false,
                         timer: 1500
                         });
                     })
                     .fail((errors) => {
-                        alert('Tidak dapat menyimpan data');
+                        table.ajax.reload();
+                        Swal.fire({
+                        icon: "error",
+                        title: "Gagal",
+                        text: "Tidak bisa menambahkan,telepon sudah ada di daftar!",
+                        confirmButtonText: 'OK'
+                        });
                         return;
                     });
                 }

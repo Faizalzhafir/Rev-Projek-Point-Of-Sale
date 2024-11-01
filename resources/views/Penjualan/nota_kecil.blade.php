@@ -3,10 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Nota Kecil</title>
+
     <?php
     $style = '
-        <style>
+    <style>
         * {
             font-family: "consolas", sans-serif;
         }
@@ -34,17 +36,16 @@
     <?php
     $style .=
         ! empty($_COOKIE['innerHeight'])
-            ? $_COOKIE['innerHeight'] .'mm: }'
+            ? $_COOKIE['innerHeight'] .'mm; }'
             : '}';
     ?>
     <?php
     $style .= '
-                html, body {
-                    width: 70mm;  
-                }
-                .btn-print{
-                    display: none;
-                }
+            html, body {
+                width: 70mm;  
+            }
+            .btn-print {
+                display: none;
             }
         }
     </style>
@@ -65,8 +66,8 @@
         <p style="float: right;">{{ strtoupper(auth()->user()->name) }}</p>
     </div>
     <div class="clear-both" style="clear: both;"></div>
-    <p style="margin: 0;">No: {{ tambah_nol_didepan($penjualan->id_penjualan, 8) }}</p>
-    <p style="margin: 0;" class="text-center">====================================</p>
+    <p>No: {{ tambah_nol_didepan($penjualan->id_penjualan, 8) }}</p>
+    <p class="text-center">====================================</p>
 
     <br>
     <table width="100%" style="border: 0;">
@@ -91,7 +92,7 @@
         @endforeach
     </table>
     <!-- <p class="text-center">====================================</p> -->
-    <p class="text-center">------------------------------------</p>
+    <p class="text-center">-----------------------------------</p>
 
     <table width="100%" style="border: 0;">
         <tr>
@@ -138,7 +139,6 @@
         </tr>
     </table>
     <p class="text-center">====================================</p>
-
     <p class="text-center"> -- TERIMA KASIH --</p>
 
     <script>

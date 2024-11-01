@@ -13,7 +13,8 @@ class UserController extends Controller
     }
 
     public function data() {
-        $user = User::isNotAdmin()->orderBy('id', 'desc')->get();
+        $user = User::isNotAdmin()->orderBy('id', 'desc')->get(); //Model User akan memanggil scope method yang ada di Model,untuk memakai fungsi kodenya di kode ini
+        //dilanjutkan dengan memfilter penampilan datanya,berdasarkan id (id),dengan urutan dari yang terbesar (desc),lalu mengambil semua hasil yang sesuai dengan kondisinya (get)
 
         return datatables()
             ->of($user)
@@ -32,6 +33,10 @@ class UserController extends Controller
 
     public function store(Request $request)
     {
+        $request->validate([
+            'email' => 'required|unique:users,email', // Validasi email unik tanpa format tertentu
+        ]);
+
         $user = new User();
         $user->name = $request->name;
         $user->email = $request->email;
@@ -85,7 +90,13 @@ class UserController extends Controller
      */
     public function destroy(string $id)
     {
-        $user = User::find($id);
+        $user = User::findOrFail($id);
+
+        //kondisi untuk mengecek apakah user ada di daftar penjualan atau tidak,jika ya maka tidak dapat dihapus
+        if($user->penjualan()->exists()) {
+            return redirect()->json(['message' => 'User tidak dapat dihapus,karena telah digunakan di Penjualan'], 400);
+        }
+
         $user->delete();
 
         return response(null, 204);

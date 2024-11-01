@@ -201,7 +201,7 @@
 
         // Cek stok untuk setiap produk dalam tabel,dengan memanggil setiap baris (tr) yang ada pada table-penjualan,yang nantinya akan menggunakan fungsi loop di jquery (each) yang akan mengiterasi atau memutar pada tabel yang dipanggil,dimana setiap kali loop dijalankan,maka fungsi anonim akan berjalan untuk setiap baris tabel 
         $('.table-penjualan tbody tr').each(function () {
-            let stokTersedia = parseInt($(this).find('.stok').text()); //Stok yang tersedia,this merujuk pada tr (baris tabel saat ini(yang dipanggil pertama kali)),lalu kan mencarikan class stok dalam tabel tersebut menggunakan (find),lalu ambil teks nya (isian) yaitu jumlah stoknya menggunakan text,lalu konversi teks yang diambil ke dalam bentuk angak bulat integer,dan memasukkannya ke dalam variabel  stokTersedia
+            let stokTersedia = parseInt($(this).find('.stok').text()); //Stok yang tersedia,this merujuk pada tr (baris tabel saat ini(yang dipanggil pertama kali)),lalu akan mencarikan class stok dalam tabel tersebut menggunakan (find),lalu ambil teks nya (isian) yaitu jumlah stoknya menggunakan text,lalu konversi teks yang diambil ke dalam bentuk angak bulat integer (parseInt) ,dan memasukkannya ke dalam variabel  stokTersedia
             let jumlah = parseInt($(this).find('.quantity').val()) || 0; // Jumlah yang diinput,sama halnya dengan kode sebelumnya,yang membedakan yaitu kelas yang dicari yaitu quantity (di tabel),lalu mengambil nilai input (val.) yang diisi oleh pengguna di elemen input tersebut (jumah stok),dan disimpan ke variabel jumlah,jika pengguna tidak menginputkan apapun,(|| 0) maka gunakan "0",sebagai nilai default,untuk disimpan ke variabel jumlah 
 
             //buat pengkondisian yang menyatakan,jika variabel jumlah > variabel stokTersedia atau (||) variabel stokTersedia sama dengan (strict equal one type,one value) 0,dan jika salah satu kondisi terpenuhi,makajalankan kode yang ada di blok
@@ -299,7 +299,7 @@
                 Swal.fire({
                     icon: 'warning',
                     title: 'Stok Tidak Valid',
-                    text: 'Jumlah stok melebihi stok yang tersedia',
+                    text: 'Jumlah kuantitas melebihi stok yang tersedia',
                     confirmButtonText: 'OK'
                 });
                 return;
@@ -334,14 +334,14 @@
 
         //Event listener untuk kolom diterima,jquery mengambil id diterima dari kolom diatas,lalu buat event pada saat (on) pengguna menginputkan dikolom ini,maka jalankan fungsi callback nya 
         $('#diterima').on('input', function () {
-            let value = $(this).val().replace(/\D/g, ''); //Hapus karakter non digit,this merujuk pada id yang dipaggil (diterima),lalu ambil nilai nya meggunakan val,dan gati (replace) dengan mempertahankan angka ((/D) mewakili karakter non digit),secara menyeluruh (g),pada nilai string yang diambil (''),lalu simpan nilai nya ke variabel value
+            let value = $(this).val().replace(/\D/g, ''); //Hapus karakter non digit,this merujuk pada id yang dipaggil (diterima),lalu ambil nilai nya meggunakan val,dan ganti (replace) dengan mempertahankan angka ((/D) mewakili karakter non digit),secara menyeluruh (g),pada nilai string yang diambil (''),lalu simpan nilai nya ke variabel value
             //pengkondisian jika,variabel value (nilai dan tipe nya (strict equal)) sama dengan "" (null)
             if (value === "") {
                 $(this).val(0); //maka this (nilai diterima),isi nilai nya (val) dengan  angka nol
                 return; //hentikan fungsi,sehingga tidak ada operasi lebih lanjut
             }
-            $(this).val(new Intl.NumberFormat('id-ID').format(value)); // Format Kembali,this merujuk pada diterima (nilai),dan atur value nya (val) dengan membuat value yang baru (new),dan panggil fungsi bawaan ari javascript,untuk memformat angka berdasarkan lokal tertentu (id - ID (Indonesia)),untuk membuat format variabel value (format.val)
-            loadForm($('#diskon').val(), value); //Fungsi ini mungkin digunakan untuk memperbarui form atau menghitung sesuatu berdasarkan input yang diterima dan nilai diskon,bisa jadi fungsi loadform ini digunakan untuk,menghitung nilai diskon setelah menerima dari parametee kedua (value)
+            $(this).val(new Intl.NumberFormat('id-ID').format(value)); // Format Kembali,this merujuk pada diterima (nilai),dan atur value nya (val) dengan membuat value yang baru (new),dan panggil fungsi bawaan dari javascript,untuk memformat angka berdasarkan lokal tertentu (id - ID (Indonesia)),untuk membuat format variabel value (format.val)
+            loadForm($('#diskon').val(), value); //Fungsi ini mungkin digunakan untuk memperbarui form atau menghitung sesuatu berdasarkan input yang diterima dan nilai diskon,bisa jadi fungsi loadform ini digunakan untuk,menghitung nilai diskon setelah menerima dari parameter kedua (value)
         }).focus(function () {
             $(this).select();
             //event focus digunakan untuk memfokuskan pada saat pengguna memasukkan data ke dalam kolom,dan pada saat itu dilakukan,maka jalankan fungsi (function),dengan merujuk pada input yang sedang dimasukan (this),dan pilih semua teks yang tadi diinputkan di kolom (select),ini mengkibatkan pengguna mengklik input atau menggunakan tab untuk berpindah ke input ini, semua teks di dalam input akan disorot secara otomatis,terutama pada saat pengguna ingin menytel ulang untuk jumlah yang diinputkan
@@ -353,7 +353,7 @@
 
             checkStok(); // Cek validasi stok sebelum menyimpan,fungsi ini dipanggil untuk mengecek jumlah stok apakah mencukupi atau tidak,dan mengambil (nilai) variabel isstokValid 
 
-            //Dikarenakan isstokValid merupakan boolean,maka jika bernilai false (stok kurang atau 0),maka kondisi ini akan bernilai true (penggunaan not !) dan memunculkan notifikasi alertnya
+            //Dikarenakan isStokValid merupakan boolean,maka jika bernilai false (stok kurang atau 0),maka kondisi ini akan bernilai true (penggunaan not !) dan memunculkan notifikasi alertnya
             if (!isStokValid) {
                 Swal.fire({
                     icon: 'error',

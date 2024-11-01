@@ -45,7 +45,7 @@
                 </div>
                 <div class="pull-right">
                   <a href="#" class="btn btn-default btn-flat" onclick="$('#logout-form').submit()">Keluar</a>
-                  <!-- penggunaan logout menggunakan jquery,dengan menghubungkan melalui idi pada form action dibawah -->
+                  <!-- penggunaan logout menggunakan jquery,dengan menghubungkan melalui id pada form action dibawah -->
                 </div>
               </li>
             </ul>

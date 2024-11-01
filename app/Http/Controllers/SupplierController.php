@@ -32,7 +32,6 @@ class SupplierController extends Controller
     public function store(Request $request)
     {
         
-        
         $request->validate([
             'telepon' => 'required|unique:supplier,telepon', // Validasi telepon unik tanpa format tertentu
         ]); 

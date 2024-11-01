@@ -38,12 +38,16 @@ Route::get('landing', [LandingController::class, 'index'])->name('landing');
 Route::get('/login', [LoginController::class, 'index'])->name('login');
 Route::get('login', [LoginController::class, 'index'])->name('login');
 
-
+//Middleware berfungsi untuk membatasi akses setiap pengguna yang hendak masuk,apakah sudah terdaftar atau tidak
+//group mengelompokan untuk route list,yang dibatasi dengan middleware,auth merupakan alias yang ada di Kernel.php,yang nantinya mengarahkan kita ke halaman yang menampilkan route untuk middlewarenya
 Route::group(['middleware' => 'auth'], function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
+    //level mengarah ke alias yang ada Kernel.php dan 1 merupakan level yang ada di kolom level di database,sehingga teridentifikasi level berapa saja dengan hak aksesnya
     Route::group(['middleware' => 'level:1'], function () {
         Route::get('/category/data', [CategoryController::class, 'data'])->name('category.data');
+        //route reource memiliki fungsi otomatis untuk memuat seluruh route dasar yang diperlukan,Laravel akan secara otoatis membuatnya terutama untuk kebutuhan operasi crud dan lainnya pada resource category,sehingga tidak perlu mendefinisikan setiap route
+        //tetapi perlu diperhatikan pula terkait kekurangannya,akan lebih baik apabila penggunaan ini dapat kita sesuaikan tergantung kebutuhan,dengan menilai kekurangan dan kelebihannya terlebih dahulu aas sistem yang kita buat
         Route::resource('/category', CategoryController::class );
         
         Route::get('/product/data', [ProductController::class, 'data'])->name('product.data');

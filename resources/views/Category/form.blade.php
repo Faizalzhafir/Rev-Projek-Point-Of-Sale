@@ -7,7 +7,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title">Modal title</h4>
+                <h4 class="modal-title"></h4>
             </div>
             <div class="modal-body">
                <div class="form-group row">
@@ -19,8 +19,8 @@
                </div>
             </div>
             <div class="modal-footer">
-            <button class="btn btn-sm btn-flat btn-primary"><i class="fa fa-save"></i> Save</button>
-                <button type="button" class="btn btn-sm btn-flat btn-warning" data-dismiss="modal"><i class="fa fa-arrow-circle-left"></i> Close</button>
+            <button class="btn btn-sm btn-flat btn-primary"><i class="fa fa-save"></i> Simpan</button>
+                <button type="button" class="btn btn-sm btn-flat btn-warning" data-dismiss="modal"><i class="fa fa-arrow-circle-left"></i> Tutup</button>
             </div>
         </div><!-- /.modal-content -->
     </form>

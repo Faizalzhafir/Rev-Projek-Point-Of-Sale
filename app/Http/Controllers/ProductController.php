@@ -89,6 +89,14 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
+        // Check if a product with the same name already exists
+        // $existingProduct = Product::where('nama_produk', $request->nama_produk)->first();
+
+        // if ($existingProduct) {
+        //     // Return a response indicating the product name already exists
+        //     return response()->json(['error' => 'Nama produk sudah ada'], 400);
+        // }
+
         // Hilangkan titik pada harga_beli dan harga_jual sebelum disimpan
         $request->merge([
             'harga_beli' => str_replace('.', '', $request->harga_beli),

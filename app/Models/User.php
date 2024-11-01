@@ -62,5 +62,13 @@ class User extends Authenticatable
     public function scopeIsNotAdmin($query) {
         return $query->where('level', '!=', 1);
     }
-    //scope disini berfungsi agar tidak menampilkan level 1,yaitu admin pada halaman data user
+    //metode yang digunakn dengan memanfaatkan fitur query scope,dengan fungsi untuk memfilter data yang akan ditampilkan scope disini berfungsi agar tidak menampilkan level 1,yaitu admin pada halaman data user
+    //query scope merupakan salah satu fitur untuk memungkinkan membuat query bawaan,yang nantinya dapat didefiisikan di kondisi tertentu di tempat yang lain sesuai kebutuhan
+    //untuk setiap method yang dibuat harus diawali dengan kata scope disatukan dengan nama (kondisional) yang nantinya dapat memanggil nama tersebut untuk penggunaannya,jadi dengan scope maka akan membuat penagturan kode dengan fungsi yang sama dapat terkelola
+    //scope bisa ditambahkan dengan parameter (untuk parameter tidah harus berada dalam satu file,bisa dari luar),dengan tambahkan paramternya di argumen fungsi kodenya,lalu jika akan di panggil (scope),maka tambahkan parameter tadi sebagai argumen setelah nama scopenya
+
+    public function penjualan() {
+        return $this->hasMany(Penjualan::class, 'id_user');
+    }
+    //fungsi untuk membuat relasi dengan Model Pembelian,agar dapat melihat User sudah digunakan atau tidak
 }

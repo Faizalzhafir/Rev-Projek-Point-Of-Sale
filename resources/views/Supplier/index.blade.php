@@ -186,7 +186,7 @@
                         Swal.fire({
                             icon: 'error',
                             title: 'Gagal',
-                            text: 'Tidak dapat menghapus Supplier karena Supplier sedang digunakan!',
+                            text: 'Tidak dapat menghapus Supplier karena Supplier sedang digunakan di Halaman Pembelian!',
                             confirmButtonText: 'OK'
                         });
                     });

@@ -40,7 +40,7 @@ class PengeluaranController extends Controller
         // Hilangkan titik pada harga_beli dan harga_jual sebelum disimpan
         $request->merge([
             'nominal' => str_replace('.', '', $request->nominal)
-             //merge berfungsi untuk mengganti atau memodifikasi data yang ada didalam objek request,dimana request menyimpan data yang sebelumnya telah diinputkan (dari form),dalam hal ini merge menggantikan nilai harga_beli dan harga_jual setelah dimodifikasi
+            //merge berfungsi untuk mengganti atau memodifikasi data yang ada didalam objek request,dimana request menyimpan data yang sebelumnya telah diinputkan (dari form),dalam hal ini merge menggantikan nilai harga_beli dan harga_jual setelah dimodifikasi
             //str_replace berfungsi untuk mengganti seluruh kemunculan karakter dalam nilai request dalam hal ini,titik diganti menjadi tidak ada pada variabel request yang diminta untuk diganti
             //kenapa fungsi ini dijalnakan?karena untuk membuat format string yang dikirimkan ke database sesuai dengan format numerik,tanpa ada titik (pemisah ribuan dari index)
         ]);
